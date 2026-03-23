@@ -9,14 +9,15 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
-import { scoreTentativeInvoker } from '@/services/score-operations/ScoreTentativeInvoker';
-import { AddScore } from '@/services/score-operations/AddScore';
+import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
 
 export default function PlayPage() {
     const multiplicatorBaseValue = 1;
 
     const [scoreTentative, setScoreTentative] = useState(0);
     const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
+    const score = { value: scoreTentative }
+    const [scoresAdded, setScoresAdded] = useState([] as number[]);
 
     const onMultiplicatorPressed = () => {
         if (multiplicator < 6) {
@@ -36,14 +37,26 @@ export default function PlayPage() {
             toAdd = die.valueBase;
         }
 
-        scoreTentativeInvoker.execute(new AddScore(scoreTentative, setScoreTentative, toAdd))
+        setScoresAdded([...scoresAdded, toAdd]);
+        setScoreTentative(scoreTentative + toAdd);
         setMultiplicator(multiplicatorBaseValue);
+    };
+
+    const onBtnRollbackPressed = () => {
+        if (multiplicator > multiplicatorBaseValue) {
+            setMultiplicator(multiplicatorBaseValue);
+        } else if (scoresAdded.length != 0) {
+            const toRemove = scoresAdded[scoresAdded.length - 1];
+
+            setScoresAdded(scoresAdded.slice(0, scoresAdded.length - 1));
+            setScoreTentative(scoreTentative - toRemove);
+        }
     };
 
     return (
         <ThemedView style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
-                <ScoreDisplayer score={scoreTentative} />
+                <ScoreDisplayer score={score.value} />
                 <View style={styles.btnZone}>
                     <View style={styles.btnRow}>
                         <ButtonScore die={Dice[DiceName.ONE]} onPressCommand={onBtnScorePressed} />
@@ -57,6 +70,7 @@ export default function PlayPage() {
                     </View>
                     <View style={styles.btnRow}>
                         <ButtonMultiplicator multiplicator={multiplicator} onPressCommand={onMultiplicatorPressed} />
+                        <ButtonRollback onPressCommand={onBtnRollbackPressed} />
                     </View>
                 </View>
                 {Platform.OS === 'web' && <WebBadge />}

@@ -1,12 +1,14 @@
+import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
 
-type ButtonMultiplicatorProps = {
-    multiplicator: number;
+type ButtonRollbackProps = {
     onPressCommand?: any;
 };
 
-export function ButtonMultiplicator({ multiplicator, onPressCommand }: ButtonMultiplicatorProps) {
+export function ButtonRollback({ onPressCommand }: ButtonRollbackProps) {
+    const rollbackSymbol = "<=";
+
     return (
         <Pressable
             onPress={onPressCommand}
@@ -15,7 +17,7 @@ export function ButtonMultiplicator({ multiplicator, onPressCommand }: ButtonMul
                 pressed ? styles.backgroundPressed : styles.backgroundIdle
             ]}
         >
-            <Text style={styles.text}>x{multiplicator}</Text>
+            <Text style={styles.text}>{rollbackSymbol}</Text>
         </Pressable>
     );
 }

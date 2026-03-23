@@ -1,77 +1,93 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform, StyleSheet, View } from 'react-native';
 
+import { ButtonMultiplicator } from '@/components/btn-multiplicator/btn-multiplicator';
+import { ButtonScore } from '@/components/score-buttons/button-score';
 import { ScoreDisplayer } from '@/components/score-displayer/score-displayer';
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Dice, DiceName, Die } from '@/constants/dice-values';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
+export default function PlayPage() {
+    const multiplicatorBaseValue = 1;
+
+    const [scoreTentative, setScoreTentative] = useState(0);
+    const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
+
+    const onMultiplicatorPressed = () => {
+        if (multiplicator < 6) {
+            setMultiplicator(multiplicator + 1);
+        }
+    };
+
+    const onBtnScorePressed = (die: Die) => {
+        console.log(die);
+        const atLeast3Dice = multiplicator >= 3;
+        let toAdd: number = 0;
+
+        if (atLeast3Dice) {
+            toAdd = die.valueThreeTimes;
+            const multiplicatorPower = multiplicator - 3;
+            toAdd = toAdd * Math.pow(2, multiplicatorPower);
+        } else {
+            toAdd = die.valueBase;
+        }
+
+        setScoreTentative(scoreTentative + toAdd);
+    };
+
     return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
+        <ThemedView style={styles.container}>
+            <SafeAreaView style={styles.safeArea}>
+                <ScoreDisplayer score={scoreTentative} />
+                <View style={styles.btnZone}>
+                    <View style={styles.btnRow}>
+                        <ButtonScore die={Dice[DiceName.ONE]} onPressCommand={onBtnScorePressed} />
+                        <ButtonScore die={Dice[DiceName.TWO]} onPressCommand={onBtnScorePressed} />
+                        <ButtonScore die={Dice[DiceName.THREE]} onPressCommand={onBtnScorePressed} />
+                    </View>
+                    <View style={styles.btnRow}>
+                        <ButtonScore die={Dice[DiceName.FOUR]} onPressCommand={onBtnScorePressed} />
+                        <ButtonScore die={Dice[DiceName.FIVE]} onPressCommand={onBtnScorePressed} />
+                        <ButtonScore die={Dice[DiceName.SIX]} onPressCommand={onBtnScorePressed} />
+                    </View>
+                    <View style={styles.btnRow}>
+                        <ButtonMultiplicator multiplicator={multiplicator} onPressCommand={onMultiplicatorPressed} />
+                    </View>
+                </View>
+                {Platform.OS === 'web' && <WebBadge />}
+            </SafeAreaView>
+        </ThemedView>
     );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-
-        <ScoreDisplayer score='10000'/>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    safeArea: {
+        flex: 1,
+        paddingHorizontal: Spacing.four,
+        alignItems: 'center',
+        gap: Spacing.three,
+        paddingBottom: BottomTabInset + Spacing.three,
+        maxWidth: MaxContentWidth,
+    },
+    btnZone: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'stretch',
+        backgroundColor: 'red',
+        width: '80%'
+    },
+    btnRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center'
+    }
 });

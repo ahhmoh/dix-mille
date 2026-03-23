@@ -4,13 +4,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Spacing } from '@/constants/theme';
 
 type ScoreDisplayerProps = {
-  score?: string;
+    score?: number;
 };
 
 export function ScoreDisplayer({ score }: ScoreDisplayerProps) {
   return (
     <View style={styles.stepRow}>
-        <Text>{ score }</Text>
+          <Text style={styles.score}>{score}</Text>
     </View>
   );
 }
@@ -20,9 +20,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  codeSnippet: {
-    borderRadius: Spacing.two,
-    paddingVertical: Spacing.half,
-    paddingHorizontal: Spacing.two,
-  },
+    score: {
+        fontSize: 60
+    }
 });

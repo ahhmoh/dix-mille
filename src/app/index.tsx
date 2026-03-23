@@ -9,6 +9,8 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
+import { scoreTentativeInvoker } from '@/services/score-operations/ScoreTentativeInvoker';
+import { AddScore } from '@/services/score-operations/AddScore';
 
 export default function PlayPage() {
     const multiplicatorBaseValue = 1;
@@ -23,7 +25,6 @@ export default function PlayPage() {
     };
 
     const onBtnScorePressed = (die: Die) => {
-        console.log(die);
         const atLeast3Dice = multiplicator >= 3;
         let toAdd: number = 0;
 
@@ -35,7 +36,8 @@ export default function PlayPage() {
             toAdd = die.valueBase;
         }
 
-        setScoreTentative(scoreTentative + toAdd);
+        scoreTentativeInvoker.execute(new AddScore(scoreTentative, setScoreTentative, toAdd))
+        setMultiplicator(multiplicatorBaseValue);
     };
 
     return (

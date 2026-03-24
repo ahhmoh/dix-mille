@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
+import { ButtonBankScore } from '@/components/btn-bank-score';
 
 export default function PlayPage() {
     const multiplicatorBaseValue = 1;
@@ -71,6 +72,7 @@ export default function PlayPage() {
                     <View style={styles.btnRow}>
                         <ButtonMultiplicator multiplicator={multiplicator} onPressCommand={onMultiplicatorPressed} />
                         <ButtonRollback onPressCommand={onBtnRollbackPressed} />
+                        <ButtonBankScore onPressCommand={onBtnRollbackPressed} />
                     </View>
                 </View>
                 {Platform.OS === 'web' && <WebBadge />}

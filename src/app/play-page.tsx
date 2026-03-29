@@ -11,14 +11,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
 import { ButtonBankScore } from '@/components/btn-bank-score';
+import { PlayerScores, Scores } from '@/components/scores/scores';
+import { ScoreList } from '@/components/scores/score-list';
+import { scoreModifierService } from '@/services/scores-modifier.service';
+
+const scores: Scores = {
+    "ant": { name: "ant", scores: [] },
+    "apo": { name: "apo", scores: [] },
+    "motio": { name: "motio", scores: [] },
+    "motieo": { name: "motieo", scores: [] },
+    "motizfefo": { name: "motizfefo", scores: [] },
+    "motizefo": { name: "motizefo", scores: [] },
+};
+scoreModifierService.addPlayer(scores, "ant");
 
 export default function PlayPage() {
     const multiplicatorBaseValue = 1;
 
+    const [currentPlayer, setCurrentPlayer] = useState("ant");
     const [scoreTentative, setScoreTentative] = useState(0);
     const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
-    const score = { value: scoreTentative }
     const [scoresAdded, setScoresAdded] = useState([] as number[]);
+    const [scoreList, setScoreList] = useState(scores);
 
     const onMultiplicatorPressed = () => {
         if (multiplicator < 6) {
@@ -54,10 +68,23 @@ export default function PlayPage() {
         }
     };
 
+    const onBtnValidatePressed = () => {
+        if (scoreTentative === 0) {
+            return;
+        }
+
+        const updatedScores = scoreModifierService.saveScore(scoreList, currentPlayer, scoreTentative);
+        setScoreList(updatedScores);
+        setScoreTentative(0);
+    };
+
     return (
         <ThemedView style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
-                <ScoreDisplayer score={score.value} />
+                <ScoreList playerScores={scoreList} />
+
+                <ScoreDisplayer score={scoreTentative} />
+
                 <View style={styles.btnZone}>
                     <View style={styles.btnRow}>
                         <ButtonScore die={Dice[DiceName.ONE]} onPressCommand={onBtnScorePressed} />
@@ -72,7 +99,7 @@ export default function PlayPage() {
                     <View style={styles.btnRow}>
                         <ButtonMultiplicator multiplicator={multiplicator} onPressCommand={onMultiplicatorPressed} />
                         <ButtonRollback onPressCommand={onBtnRollbackPressed} />
-                        <ButtonBankScore onPressCommand={onBtnRollbackPressed} />
+                        <ButtonBankScore onPressCommand={onBtnValidatePressed} />
                     </View>
                 </View>
                 {Platform.OS === 'web' && <WebBadge />}

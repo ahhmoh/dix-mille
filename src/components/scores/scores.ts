@@ -1,8 +1,5 @@
-export class Scores {
-    private _scoresForPlayers: PlayerScores[] = [];
-    public get scoresForPlayers() {
-        return this._scoresForPlayers;
-    }
+export interface Scores {
+    [player: string]: PlayerScores;
 }
 
 export interface PlayerScores {

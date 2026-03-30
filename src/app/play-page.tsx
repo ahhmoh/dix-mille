@@ -52,9 +52,12 @@ export default function PlayPage() {
             toAdd = die.valueBase;
         }
 
-        setScoresAdded([...scoresAdded, toAdd]);
-        setScoreTentative(scoreTentative + toAdd);
-        setMultiplicator(multiplicatorBaseValue);
+        if (toAdd += 0) {
+            setScoresAdded([...scoresAdded, toAdd]);
+            setScoreTentative(scoreTentative + toAdd);
+            setMultiplicator(multiplicatorBaseValue);
+        }
+
     };
 
     const onBtnRollbackPressed = () => {

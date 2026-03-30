@@ -115,8 +115,8 @@ describe("ScoresModifierService", () => {
             const playerScores = scores[player].scores;
 
             //when
-            service.saveScore(scores, player, firstScore);
-            service.saveScore(scores, player, secondScore);
+            scores = service.saveScore(scores, player, firstScore);
+            scores = service.saveScore(scores, player, secondScore);
 
             // then
             expect(playerScores.length).toBe(2);
@@ -136,65 +136,63 @@ describe("ScoresModifierService", () => {
             const player = "ant";
 
             //when
-            service.saveScore(scores, player, illegalScore);
+            scores = service.saveScore(scores, player, illegalScore);
 
             // then
             expect(scores[player].scores.length).toBe(0);
         });
     });
 
-    // describe("addMissToPlayer", () => {
-    //     let scores: Scores;
+    describe("addMissToPlayer", () => {
+        let scores: Scores;
+        const playerName = "ant";
 
-    //     beforeEach(() => {
-    //         scores = new Scores();
-    //         service.addPlayer(scores, "ant");
-    //     });
+        beforeEach(() => {
+            scores = service.addPlayer({}, playerName);
+        });
 
-    //     it("should add miss to last score", () => {
-    //         // given
-    //         const indexPlayer = 0;
-    //         const playerScores = scores.scoresForPlayers[indexPlayer].scores;
+        it("should add miss to last score", () => {
+            // given
+            const playerScores = scores[playerName].scores;
 
-    //         const firstScore = 100;
-    //         const secondScore = 200;
-    //         service.saveScore(scores, 0, firstScore);
-    //         service.saveScore(scores, 0, secondScore);
+            const firstScore = 100;
+            const secondScore = 200;
+            scores = service.saveScore(scores, playerName, firstScore);
+            scores = service.saveScore(scores, playerName, secondScore);
 
-    //         //when
-    //         service.addMissToPlayer(scores, indexPlayer);
-    //         service.addMissToPlayer(scores, indexPlayer);
+            //when
+            scores = service.addMissToPlayer(scores, playerName);
+            scores = service.addMissToPlayer(scores, playerName);
 
-    //         // then
-    //         expect(playerScores[playerScores.length - 1].misses).toBe(2);
-    //     });
+            // then
+            expect(playerScores[playerScores.length - 2].misses).toBe(0);
+            expect(playerScores[playerScores.length - 1].misses).toBe(2);
+        });
 
-    //     it("should not add more than 2 misses to last score", () => {
-    //         // given
-    //         const indexPlayer = 0;
-    //         const playerScores = scores.scoresForPlayers[indexPlayer].scores;
+        it("should not add more than 2 misses to last score", () => {
+            // given
+            const playerScores = scores[playerName].scores;
 
-    //         service.saveScore(scores, 0, 100);
+            scores = service.saveScore(scores, playerName, 100);
 
-    //         //when
-    //         service.addMissToPlayer(scores, indexPlayer);
-    //         service.addMissToPlayer(scores, indexPlayer);
-    //         service.addMissToPlayer(scores, indexPlayer);
+            //when
+            scores = service.addMissToPlayer(scores, playerName);
+            scores = service.addMissToPlayer(scores, playerName);
+            scores = service.addMissToPlayer(scores, playerName);
 
-    //         // then
-    //         expect(playerScores[playerScores.length - 1].misses).toBe(2);
-    //     });
+            // then
+            expect(playerScores[playerScores.length - 1].misses).toBe(2);
+        });
 
-    //     it("should not do anything if no scores registered yet", () => {
-    //         // given
-    //         const indexPlayer = 0;
-    //         const playerScores = scores.scoresForPlayers[indexPlayer].scores;
+        it("should not do anything if no scores registered yet", () => {
+            // given
+            const playerScores = scores[playerName].scores;
 
-    //         //when
-    //         service.addMissToPlayer(scores, indexPlayer);
+            //when
+            service.addMissToPlayer(scores, playerName);
 
-    //         // then
-    //         expect(playerScores.length).toBe(0);
-    //     });
-    // });
+            // then
+            expect(playerScores.length).toBe(0);
+        });
+    });
 });

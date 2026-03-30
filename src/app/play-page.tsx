@@ -14,6 +14,7 @@ import { ButtonBankScore } from '@/components/btn-bank-score';
 import { Scores } from '@/components/scores/scores';
 import { ScoreList } from '@/components/scores/score-list';
 import { scoreModifierService } from '@/services/scores-modifier.service';
+import { ButtonFailed } from '@/components/btn-failed';
 
 const scores: Scores = {
     "ant": { name: "ant", scores: [] },
@@ -82,6 +83,13 @@ export default function PlayPage() {
         setScoresAdded([]);
     };
 
+    const onBtnFailedPressed = () => {
+        const updatedScores = scoreModifierService.addMissToPlayer(scoreList, currentPlayer);
+        setScoreList(updatedScores);
+        setScoreTentative(0);
+        setScoresAdded([]);
+    };
+
     return (
         <ThemedView style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
@@ -104,6 +112,9 @@ export default function PlayPage() {
                         <ButtonMultiplicator multiplicator={multiplicator} onPressCommand={onMultiplicatorPressed} />
                         <ButtonRollback onPressCommand={onBtnRollbackPressed} />
                         <ButtonBankScore onPressCommand={onBtnValidatePressed} />
+                    </View>
+                    <View style={styles.btnRow}>
+                        <ButtonFailed onPressCommand={onBtnFailedPressed} />
                     </View>
                 </View>
                 {Platform.OS === 'web' && <WebBadge />}

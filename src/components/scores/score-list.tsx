@@ -11,8 +11,8 @@ export function ScoreList({ playerScores }: ScoreListProps) {
 
     const renderScore = ({ item }: { item: PlayerScores }) => {
         const playerName = item?.name ?? "";
-        const lastScore = item.scores[item.scores.length - 1]?.value ?? 0;
-        return <Text key={"score-" + playerName} style={styles.score}>{playerName} {lastScore} </Text>;
+        const lastScore = item.scores[item.scores.length - 1] ?? {};
+        return <Text key={"score-" + playerName} style={styles.score}>{playerName} {lastScore?.value} {"|".repeat(lastScore?.misses)}</Text>;
     };
 
     return (

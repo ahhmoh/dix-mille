@@ -1,11 +1,11 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 
 
-type ButtonBankScoreProps = {
+type ButtonFailedProps = {
     onPressCommand?: any;
 };
 
-export function ButtonBankScore({ onPressCommand }: ButtonBankScoreProps) {
+export function ButtonFailed({ onPressCommand }: ButtonFailedProps) {
     return (
         <Pressable
             onPress={onPressCommand}
@@ -14,23 +14,23 @@ export function ButtonBankScore({ onPressCommand }: ButtonBankScoreProps) {
                 pressed ? styles.backgroundPressed : styles.backgroundIdle
             ]}
         >
-            <Text style={styles.text}>OK</Text>
+            <Text style={styles.text}>Failed</Text>
         </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
     backgroundIdle: {
-        backgroundColor: '#06402B'
+        backgroundColor: '#bc141a'
     },
     backgroundPressed: {
-        backgroundColor: '#17d590'
+        backgroundColor: '#b66d6f'
     },
     button: {
         display: "flex",
         justifyContent: 'center',
         alignItems: "center",
-        width: 80,
+        width: '100%',
         height: 80,
         borderWidth: 2,
         borderColor: 'black',

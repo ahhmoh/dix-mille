@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
 import { ButtonBankScore } from '@/components/btn-bank-score';
-import { PlayerScores, Scores } from '@/components/scores/scores';
+import { Scores } from '@/components/scores/scores';
 import { ScoreList } from '@/components/scores/score-list';
 import { scoreModifierService } from '@/services/scores-modifier.service';
 
@@ -79,6 +79,7 @@ export default function PlayPage() {
         const updatedScores = scoreModifierService.saveScore(scoreList, currentPlayer, scoreTentative);
         setScoreList(updatedScores);
         setScoreTentative(0);
+        setScoresAdded([]);
     };
 
     return (

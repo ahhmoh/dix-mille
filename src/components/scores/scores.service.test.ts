@@ -96,20 +96,17 @@ describe("ScoresService", () => {
     describe("saveScore", () => {
         it("should add a new score for player", () => {
             // given
-            const playerName = "ant";
-            const players: Player[] = [
-                { name: "ant", scores: [] },
-                { name: "apo", scores: [] },
-            ]
+            const player: Player = { name: "ant", scores: [] };
+
             const firstScore = 100;
             const secondScore = 200;
 
             //when
-            let transformed = service.saveScore(players, playerName, firstScore);
-            transformed = service.saveScore(players, playerName, secondScore);
+            let transformed = service.saveScore(player, firstScore);
+            transformed = service.saveScore(player, secondScore);
 
             // then
-            const playerScores = players[0].scores;
+            const playerScores = transformed.scores;
             expect(playerScores.length).toBe(2);
 
             const actualFirstScore = playerScores[0].value;
@@ -121,23 +118,22 @@ describe("ScoresService", () => {
 
         it("should add new score based on the last valid score", () => {
             // given
-            const playerName = "ant";
-            const players: Player[] = [
-                {
-                    name: "ant", scores: [
-                        { value: 100, misses: 0 },
-                        { value: 500, misses: 3 },
-                        { value: 700, misses: 3 },
+            const player: Player =
+            {
+                name: "ant",
+                scores: [
+                    { value: 100, misses: 0 },
+                    { value: 500, misses: 3 },
+                    { value: 700, misses: 3 },
+                ]
+            };
 
-                    ]
-                },
-            ]
 
             //when
-            let transformed = service.saveScore(players, playerName, 200);
+            let transformed = service.saveScore(player, 200);
 
             // then
-            const actualScores = players[0].scores;
+            const actualScores = transformed.scores;
             expect(actualScores[actualScores.length - 1].value).toBe(300);
 
         });
@@ -147,40 +143,18 @@ describe("ScoresService", () => {
             { illegalScore: -100 },
             { illegalScore: 0 },
         ])("should throw if score is illegal", ({ illegalScore }) => {
-            const player = "ant";
-            const players: Player[] = [
-                { name: "ant", scores: [] },
-                { name: "apo", scores: [] },
-            ]
+            const player: Player =
+            {
+                name: "ant",
+                scores: []
+            };
 
-            expect(() => service.saveScore(players, player, illegalScore)).toThrow();
-        });
-
-        it("should throw if player not in array", () => {
-            const playerNotIncluded = "not-included :(";
-            const scoreDummy = 100;
-            const players: Player[] = [
-                { name: "ant", scores: [] },
-                { name: "apo", scores: [] },
-            ]
-
-            expect(() => service.saveScore(players, playerNotIncluded, scoreDummy)).toThrow();
+            expect(() => service.saveScore(player, illegalScore)).toThrow();
         });
     });
 
     describe("addMissToPlayer", () => {
         const playerName = "ant";
-
-        it("sould throw if player does not exist in player list", () => {
-            const players: Player[] = [
-                {
-                    name: "ant",
-                    scores: [{ value: 200, misses: 0 }]
-                },
-            ]
-
-            expect(() => service.addMissToPlayer(players, "illegale name")).toThrow();
-        });
 
         describe("with last score being the last one saved", () => {
             it("should add miss to last score", () => {
@@ -189,19 +163,18 @@ describe("ScoresService", () => {
                     { value: 100, misses: 0 },
                     { value: 200, misses: 0 }
                 ];
-                const players: Player[] = [
-                    {
-                        name: "ant",
-                        scores
-                    },
-                ]
+                const player: Player =
+                {
+                    name: "ant",
+                    scores
+                };
 
                 //when
-                let transformed = service.addMissToPlayer(players, playerName);
-                transformed = service.addMissToPlayer(players, playerName);
+                let transformed = service.addMissToPlayer(player);
+                transformed = service.addMissToPlayer(player);
 
                 // then
-                const actualScores = transformed[0].scores;
+                const actualScores = transformed.scores;
                 expect(actualScores[actualScores.length - 2].misses).toBe(0);
                 expect(actualScores[actualScores.length - 1].misses).toBe(2);
             });
@@ -211,21 +184,20 @@ describe("ScoresService", () => {
                 const scores = [
                     { value: 100, misses: 0 },
                 ];
-                const players: Player[] = [
-                    {
-                        name: "ant",
-                        scores
-                    },
-                ]
+                const player: Player =
+                {
+                    name: "ant",
+                    scores
+                };
 
                 //when
-                let transformed = service.addMissToPlayer(players, playerName);
-                transformed = service.addMissToPlayer(transformed, playerName);
-                transformed = service.addMissToPlayer(transformed, playerName);
-                transformed = service.addMissToPlayer(transformed, playerName);
+                let transformed = service.addMissToPlayer(player);
+                transformed = service.addMissToPlayer(transformed);
+                transformed = service.addMissToPlayer(transformed);
+                transformed = service.addMissToPlayer(transformed);
 
                 // then
-                const actualScores = transformed[0].scores;
+                const actualScores = transformed.scores;
                 expect(actualScores[actualScores.length - 1].misses).toBe(3);
             });
         });
@@ -237,55 +209,51 @@ describe("ScoresService", () => {
                     { value: 200, misses: 3 },
                     { value: 500, misses: 3 }
                 ];
-                const players: Player[] = [
-                    {
-                        name: "ant",
-                        scores
-                    },
-                ]
+                const player: Player =
+                {
+                    name: "ant",
+                    scores
+                };
 
-                let transformed = service.addMissToPlayer(players, playerName);
-                transformed = service.addMissToPlayer(players, playerName);
+                let transformed = service.addMissToPlayer(player);
+                transformed = service.addMissToPlayer(player);
 
-                const actualScores = transformed[0].scores;
+                const actualScores = transformed.scores;
                 expect(actualScores[0].misses).toBe(2);
             });
         });
 
         it("should not do anything if no scores registered yet", () => {
             // given
-            const players: Player[] = [
-                {
-                    name: "ant",
-                    scores: []
-                },
-            ]
+            const player: Player =
+            {
+                name: "ant",
+                scores: []
+            };
 
             //when
-            const transformed = service.addMissToPlayer(players, playerName);
+            const transformed = service.addMissToPlayer(player);
 
             // then
-            expect(transformed[0].scores.length).toBe(0);
+            expect(transformed.scores.length).toBe(0);
         });
 
         it("should not do anything if every scores invalid", () => {
             // given
-            const players: Player[] = [
-                {
-                    name: "ant",
-                    scores: [
-                        { value: 100, misses: 3 },
-                        { value: 200, misses: 3 },
-                        { value: 500, misses: 3 }
-                    ]
-                },
-            ]
+            const player: Player =
+            {
+                name: "ant",
+                scores: [
+                    { value: 100, misses: 3 },
+                    { value: 200, misses: 3 },
+                    { value: 500, misses: 3 }]
+            };
 
             //when
-            const transformed = service.addMissToPlayer(players, playerName);
+            const transformed = service.addMissToPlayer(player);
 
             // then
-            const actualScores = transformed[0].scores;
+            const actualScores = transformed.scores;
             expect(actualScores[0].misses).toBe(3);
             expect(actualScores[1].misses).toBe(3);
             expect(actualScores[2].misses).toBe(3);

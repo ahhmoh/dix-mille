@@ -69,16 +69,18 @@ export default function PlayPage() {
             return;
         }
 
-        const updatedScores = scoreService.saveScore(playerList, currentPlayer.name, scoreTentative);
-        setPlayerList([...updatedScores]);
+        scoreService.saveScore(currentPlayer, scoreTentative);
+
+        setPlayerList([...playerList]);
         setScoreTentative(0);
         setScoresAdded([]);
         passTurnToNextPlayer();
     };
 
     const onBtnFailedPressed = () => {
-        const updatedScores = scoreService.addMissToPlayer(playerList, currentPlayer.name);
-        setPlayerList([...updatedScores]);
+        scoreService.addMissToPlayer(currentPlayer);
+
+        setPlayerList([...playerList]);
         setScoreTentative(0);
         setScoresAdded([]);
         passTurnToNextPlayer();

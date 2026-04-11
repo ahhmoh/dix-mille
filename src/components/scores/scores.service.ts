@@ -15,14 +15,10 @@ export class ScoreService {
         return players.filter(player => player.name !== name)
     }
 
-    public saveScore(players: Player[], name: string, toSave: number): Player[] {
+    public saveScore(player: Player, toSave: number): Player {
         if (toSave <= 0) {
             throw new Error("Score cannot be negative to be saved");
-        }
-
-        const player = players.find(player => player.name === name);
-
-        if (!player) {
+        } else if (!player) {
             throw new Error("Player does not exist in player list");
         }
 
@@ -34,29 +30,27 @@ export class ScoreService {
 
         player.scores.push({ value: newScore, misses: 0 });
 
-        return players;
+        return player;
     }
 
-    public addMissToPlayer(players: Player[], name: string): Player[] {
-        const player = players.find(p => p.name === name);
-
+    public addMissToPlayer(player: Player): Player {
         if (!player) {
             throw new Error("Player does not exist in player list");
         }
 
         if (player.scores.length === 0) {
-            return players;
+            return player;
         }
 
         const currentScore = this.getLastValidScore(player);
 
         if (!currentScore) {
-            return players;
+            return player;
         }
 
         currentScore.misses += 1;
 
-        return players;
+        return player;
     }
 
     public getLastValidScore(player: Player): Score | undefined {

@@ -35,6 +35,20 @@ describe("ScoresService", () => {
             // then
             expect(transformed.length).toBe(0);
         });
+
+        it("should not do anything if player already exist", () => {
+            //given
+            const playerName = "and";
+            const players: Player[] = [
+                { name: playerName, scores: [] }
+            ];
+
+            //when
+            const transformed = service.addPlayer(players, playerName);
+
+            // then
+            expect(transformed.length).toBe(1);
+        });
     });
 
     // describe("removePlayer", () => {

@@ -5,6 +5,8 @@ export class ScoreService {
     public addPlayer(players: Player[], name: string): Player[] {
         if (!name || name.length === 0) {
             return players;
+        } else if (players.find(player => player.name === name)) {
+            return players;
         }
 
         players.push({ name: name, scores: [] });

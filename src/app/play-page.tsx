@@ -16,6 +16,7 @@ import { scoreService } from '@/components/scores/scores.service';
 import { ButtonFailed } from '@/components/btn-failed';
 import { turnService } from '@/components/turns/turn.service';
 import { playersMock } from '@/components/player/players.mock';
+import { ButtonAddPlayer } from '@/components/btn-add-player/btn-add-player';
 
 
 export default function PlayPage() {
@@ -89,11 +90,17 @@ export default function PlayPage() {
     const passTurnToNextPlayer = () => {
         const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer.name);
         setCurrentPlayer(nextPlayer);
-    }
+    };
+
+    const onAddPlayer = () => {
+        scoreService.addPlayer(playerList, "yo");
+        setPlayerList([...playerList]);
+    };
 
     return (
         <ThemedView style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
+                <ButtonAddPlayer onPressCommand={onAddPlayer} />
                 <ScoreList playerScores={playerList} currentlyPlaying={currentPlayer} />
 
                 <ScoreDisplayer score={scoreTentative} />

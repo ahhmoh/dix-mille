@@ -1,13 +1,4 @@
-export interface Scores {
-    [player: string]: PlayerScores;
-}
-
-export interface PlayerScores {
-    name: string;
-    scores: ScoreSaved[];
-}
-
-export interface ScoreSaved {
+export interface Score {
     value: number;
     misses: number;
 }

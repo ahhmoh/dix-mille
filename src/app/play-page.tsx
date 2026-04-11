@@ -11,29 +11,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
 import { ButtonBankScore } from '@/components/btn-bank-score';
-import { Scores } from '@/components/scores/scores';
 import { ScoreList } from '@/components/scores/score-list';
-import { scoreModifierService } from '@/services/scores-modifier.service';
+import { scoreModifierService } from '@/components/scores/scores-modifier.service';
 import { ButtonFailed } from '@/components/btn-failed';
+import { turnService } from '@/components/turns/turn.service';
+import { playersMock } from '@/components/player/players.mock';
 
-const scores: Scores = {
-    "ant": { name: "ant", scores: [] },
-    "apo": { name: "apo", scores: [] },
-    "motio": { name: "motio", scores: [] },
-    "motieo": { name: "motieo", scores: [] },
-    "motizfefo": { name: "motizfefo", scores: [] },
-    "motizefo": { name: "motizefo", scores: [] },
-};
-scoreModifierService.addPlayer(scores, "ant");
 
 export default function PlayPage() {
     const multiplicatorBaseValue = 1;
 
-    const [currentPlayer, setCurrentPlayer] = useState("ant");
+    const [currentPlayer, setCurrentPlayer] = useState(playersMock[0]);
     const [scoreTentative, setScoreTentative] = useState(0);
     const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
     const [scoresAdded, setScoresAdded] = useState([] as number[]);
-    const [scoreList, setScoreList] = useState(scores);
+    const [playerList, setPlayerList] = useState(playersMock);
 
     const onMultiplicatorPressed = () => {
         if (multiplicator < 6) {
@@ -77,23 +69,30 @@ export default function PlayPage() {
             return;
         }
 
-        const updatedScores = scoreModifierService.saveScore(scoreList, currentPlayer, scoreTentative);
-        setScoreList(updatedScores);
+        const updatedScores = scoreModifierService.saveScore(playerList, currentPlayer.name, scoreTentative);
+        setPlayerList([...updatedScores]);
         setScoreTentative(0);
         setScoresAdded([]);
+        passTurnToNextPlayer();
     };
 
     const onBtnFailedPressed = () => {
-        const updatedScores = scoreModifierService.addMissToPlayer(scoreList, currentPlayer);
-        setScoreList(updatedScores);
+        const updatedScores = scoreModifierService.addMissToPlayer(playerList, currentPlayer.name);
+        setPlayerList([...updatedScores]);
         setScoreTentative(0);
         setScoresAdded([]);
+        passTurnToNextPlayer();
     };
+
+    const passTurnToNextPlayer = () => {
+        const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer.name);
+        setCurrentPlayer(nextPlayer);
+    }
 
     return (
         <ThemedView style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
-                <ScoreList playerScores={scoreList} />
+                <ScoreList playerScores={playerList} />
 
                 <ScoreDisplayer score={scoreTentative} />
 

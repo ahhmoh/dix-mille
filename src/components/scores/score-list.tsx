@@ -1,15 +1,15 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { PlayerScores, Scores } from './scores';
+import { Player } from '../player/player';
 
 type ScoreListProps = {
-    playerScores?: Scores;
+    playerScores?: Player[];
 };
 
 export function ScoreList({ playerScores }: ScoreListProps) {
     const data = playerScores && Object.values(playerScores) || [];
 
-    const renderScore = ({ item }: { item: PlayerScores }) => {
+    const renderScore = ({ item }: { item: Player }) => {
         const playerName = item?.name ?? "";
         const lastScore = item.scores[item.scores.length - 1] ?? {};
         const scoreValue = lastScore?.value || 0;

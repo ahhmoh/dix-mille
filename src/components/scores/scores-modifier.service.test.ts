@@ -1,4 +1,4 @@
-import { Scores } from "../components/scores/scores";
+import { Player } from "@/components/player/player";
 import { ScoreModifierService } from "./scores-modifier.service";
 
 describe("ScoresModifierService", () => {
@@ -12,32 +12,28 @@ describe("ScoresModifierService", () => {
         it("should add a player with corresponding name", () => {
             //given
             const name = "antwan";
-            const scores: Scores = {};
-
-            expect(Object.keys(scores).length).toBe(0);
+            const players: Player[] = [];
 
             //when
-            const transformedScores = service.addPlayer(scores, name);
+            const transformedScores = service.addPlayer(players, name);
 
             // then
-            expect(Object.keys(transformedScores).length).toBe(1);
-            expect(transformedScores[name].name).toBe(name);
-            expect(transformedScores[name].scores.length).toBe(0);
+            expect(transformedScores.length).toBe(1);
+            expect(transformedScores[0].name).toBe(name);
+            expect(transformedScores[0].scores.length).toBe(0);
 
         });
 
         it("should not do anything if no name passed", () => {
             //given
             const emptyName = "";
-            const scores: Scores = {};
-
-            expect(Object.keys(scores).length).toBe(0);
+            const players: Player[] = [];
 
             //when
-            const transformed = service.addPlayer(scores, emptyName);
+            const transformed = service.addPlayer(players, emptyName);
 
             // then
-            expect(Object.keys(transformed).length).toBe(0);
+            expect(transformed.length).toBe(0);
         });
     });
 
@@ -98,27 +94,22 @@ describe("ScoresModifierService", () => {
     // });
 
     describe("saveScore", () => {
-        let scores: Scores;
-
-        beforeEach(() => {
-            scores = {};
-            scores = service.addPlayer(scores, "ant");
-            scores = service.addPlayer(scores, "apo");
-        });
-
         it("should add a new score for player", () => {
             // given
-            const player = "ant";
-
+            const playerName = "ant";
+            const players: Player[] = [
+                { name: "ant", scores: [] },
+                { name: "apo", scores: [] },
+            ]
             const firstScore = 100;
             const secondScore = 200;
-            const playerScores = scores[player].scores;
 
             //when
-            scores = service.saveScore(scores, player, firstScore);
-            scores = service.saveScore(scores, player, secondScore);
+            let transformed = service.saveScore(players, playerName, firstScore);
+            transformed = service.saveScore(players, playerName, secondScore);
 
             // then
+            const playerScores = players[0].scores;
             expect(playerScores.length).toBe(2);
 
             const actualFirstScore = playerScores[0].value;
@@ -131,68 +122,90 @@ describe("ScoresModifierService", () => {
         it.each([
             { illegalScore: -100 },
             { illegalScore: 0 },
-        ])("should not save score if illegal", ({ illegalScore }) => {
-            // given
+        ])("should throw if score is illegal", ({ illegalScore }) => {
             const player = "ant";
+            const players: Player[] = [
+                { name: "ant", scores: [] },
+                { name: "apo", scores: [] },
+            ]
 
-            //when
-            scores = service.saveScore(scores, player, illegalScore);
+            expect(() => service.saveScore(players, player, illegalScore)).toThrow();
+        });
 
-            // then
-            expect(scores[player].scores.length).toBe(0);
+        it("should throw if player not in array", () => {
+            const playerNotIncluded = "not-included :(";
+            const scoreDummy = 100;
+            const players: Player[] = [
+                { name: "ant", scores: [] },
+                { name: "apo", scores: [] },
+            ]
+
+            expect(() => service.saveScore(players, playerNotIncluded, scoreDummy)).toThrow();
         });
     });
 
     describe("addMissToPlayer", () => {
-        let scores: Scores;
         const playerName = "ant";
-
-        beforeEach(() => {
-            scores = service.addPlayer({}, playerName);
-        });
 
         it("should add miss to last score", () => {
             // given
-            const playerScores = scores[playerName].scores;
-
-            const firstScore = 100;
-            const secondScore = 200;
-            scores = service.saveScore(scores, playerName, firstScore);
-            scores = service.saveScore(scores, playerName, secondScore);
+            const scores = [
+                { value: 100, misses: 0 },
+                { value: 200, misses: 0 }
+            ];
+            const players: Player[] = [
+                {
+                    name: "ant",
+                    scores
+                },
+            ]
 
             //when
-            scores = service.addMissToPlayer(scores, playerName);
-            scores = service.addMissToPlayer(scores, playerName);
+            let transformed = service.addMissToPlayer(players, playerName);
+            transformed = service.addMissToPlayer(players, playerName);
 
             // then
-            expect(playerScores[playerScores.length - 2].misses).toBe(0);
-            expect(playerScores[playerScores.length - 1].misses).toBe(2);
+            const actualScores = transformed[0].scores;
+            expect(actualScores[actualScores.length - 2].misses).toBe(0);
+            expect(actualScores[actualScores.length - 1].misses).toBe(2);
         });
 
         it("should not add more than 2 misses to last score", () => {
             // given
-            const playerScores = scores[playerName].scores;
-
-            scores = service.saveScore(scores, playerName, 100);
+            const scores = [
+                { value: 100, misses: 0 },
+            ];
+            const players: Player[] = [
+                {
+                    name: "ant",
+                    scores
+                },
+            ]
 
             //when
-            scores = service.addMissToPlayer(scores, playerName);
-            scores = service.addMissToPlayer(scores, playerName);
-            scores = service.addMissToPlayer(scores, playerName);
+            let transformed = service.addMissToPlayer(players, playerName);
+            transformed = service.addMissToPlayer(transformed, playerName);
+            transformed = service.addMissToPlayer(transformed, playerName);
 
             // then
-            expect(playerScores[playerScores.length - 1].misses).toBe(2);
+            const actualScores = transformed[0].scores;
+            expect(actualScores[actualScores.length - 1].misses).toBe(2);
         });
 
         it("should not do anything if no scores registered yet", () => {
             // given
-            const playerScores = scores[playerName].scores;
+            const players: Player[] = [
+                {
+                    name: "ant",
+                    scores: []
+                },
+            ]
 
             //when
-            service.addMissToPlayer(scores, playerName);
+            const transformed = service.addMissToPlayer(players, playerName);
 
             // then
-            expect(playerScores.length).toBe(0);
+            expect(transformed[0].scores.length).toBe(0);
         });
     });
 });

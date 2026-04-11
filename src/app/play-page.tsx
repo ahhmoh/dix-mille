@@ -92,7 +92,7 @@ export default function PlayPage() {
     return (
         <ThemedView style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
-                <ScoreList playerScores={playerList} />
+                <ScoreList playerScores={playerList} currentlyPlaying={currentPlayer} />
 
                 <ScoreDisplayer score={scoreTentative} />
 

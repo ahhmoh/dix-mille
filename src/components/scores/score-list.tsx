@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Player } from '../player/player';
+import { scoreService } from './scores.service';
 
 type ScoreListProps = {
     playerScores: Player[];
@@ -12,13 +13,15 @@ export function ScoreList({ playerScores, currentlyPlaying }: ScoreListProps) {
 
     const renderScore = ({ item }: { item: Player }) => {
         const playerName = item?.name ?? "";
-        const lastScore = item.scores[item.scores.length - 1] ?? {};
+        const lastScore = scoreService.getLastValidScore(item);
         const scoreValue = lastScore?.value || 0;
+        const misses = lastScore?.misses || 0;
         const isCurrentlyPlaying = item.name === currentlyPlaying.name;
+
         return <Text
             key={"score-" + playerName}
             style={[styles.score, isCurrentlyPlaying ? styles.currentlyPlaying : styles.notPlaying]}>
-            {playerName} {scoreValue} {"|".repeat(lastScore?.misses)}
+            {playerName} {scoreValue} {"|".repeat(misses)}
         </Text>;
     };
 

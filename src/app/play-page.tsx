@@ -12,7 +12,7 @@ import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
 import { ButtonBankScore } from '@/components/btn-bank-score';
 import { ScoreList } from '@/components/scores/score-list';
-import { scoreModifierService } from '@/components/scores/scores-modifier.service';
+import { scoreService } from '@/components/scores/scores.service';
 import { ButtonFailed } from '@/components/btn-failed';
 import { turnService } from '@/components/turns/turn.service';
 import { playersMock } from '@/components/player/players.mock';
@@ -69,7 +69,7 @@ export default function PlayPage() {
             return;
         }
 
-        const updatedScores = scoreModifierService.saveScore(playerList, currentPlayer.name, scoreTentative);
+        const updatedScores = scoreService.saveScore(playerList, currentPlayer.name, scoreTentative);
         setPlayerList([...updatedScores]);
         setScoreTentative(0);
         setScoresAdded([]);
@@ -77,7 +77,7 @@ export default function PlayPage() {
     };
 
     const onBtnFailedPressed = () => {
-        const updatedScores = scoreModifierService.addMissToPlayer(playerList, currentPlayer.name);
+        const updatedScores = scoreService.addMissToPlayer(playerList, currentPlayer.name);
         setPlayerList([...updatedScores]);
         setScoreTentative(0);
         setScoresAdded([]);

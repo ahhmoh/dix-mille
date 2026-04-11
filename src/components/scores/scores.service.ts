@@ -1,6 +1,7 @@
 import { Player } from "@/components/player/player";
+import { Score } from "./scores";
 
-export class ScoreModifierService {
+export class ScoreService {
     public addPlayer(players: Player[], name: string): Player[] {
         if (!name || name.length === 0) {
             return players;
@@ -25,9 +26,11 @@ export class ScoreModifierService {
             throw new Error("Player does not exist in player list");
         }
 
-        const newScore: number = player?.scores.length === 0
+        const lastScore = this.getLastValidScore(player);
+
+        const newScore: number = !lastScore
             ? toSave
-            : player.scores[player.scores.length - 1].value + toSave;
+            : lastScore.value + toSave;
 
         player.scores.push({ value: newScore, misses: 0 });
 
@@ -45,9 +48,9 @@ export class ScoreModifierService {
             return players;
         }
 
-        const currentScore = player.scores[player.scores.length - 1];
+        const currentScore = this.getLastValidScore(player);
 
-        if (currentScore.misses >= 2) {
+        if (!currentScore) {
             return players;
         }
 
@@ -55,6 +58,10 @@ export class ScoreModifierService {
 
         return players;
     }
+
+    public getLastValidScore(player: Player): Score | undefined {
+        return player.scores.toReversed().find(score => score.misses < 3);
+    }
 }
 
-export const scoreModifierService = new ScoreModifierService();
+export const scoreService = new ScoreService();

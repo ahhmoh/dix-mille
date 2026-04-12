@@ -8,6 +8,24 @@ interface ModalAddPlayerProps {
   onCloseModal: () => void;
 }
 
+const placeholders: Set<string> = new Set([
+  'Carmina Burrata',
+  'Buse le Clerc',
+  'Pepe Ronin',
+  'Boit un pastix',
+  'Démone Hallebarde',
+  'Ozy Oskour',
+  'Eddy de Repetto',
+  'Philippe Ballerine',
+  'Thomas de Porcherie',
+  'Cléoplâtre',
+  'Méta Miaou',
+  'Capitaine Clochet',
+  'La fée crochette',
+  'Bobard fête',
+  'Chwinamax',
+]);
+
 export const ModalAddPlayer = ({ visible, playerNames, onValidateModal, onCloseModal }: ModalAddPlayerProps) => {
   const [newPlayer, setNewPlayer] = useState<string>('');
 
@@ -24,12 +42,31 @@ export const ModalAddPlayer = ({ visible, playerNames, onValidateModal, onCloseM
 
     onValidateModal(newPlayer);
     setNewPlayer('');
+    setPlaceholder(getRandomPlaceHolder());
   };
 
   const onCancel = () => {
+    setPlaceholder(getRandomPlaceHolder());
     setNewPlayer('');
     onCloseModal();
   };
+
+  const getRandomPlaceHolder = () => {
+    const rng = Math.floor(Math.random() * placeholders.size);
+
+    let i = 0;
+    for (const placeholder of placeholders.values()) {
+      if (rng === i) {
+        return placeholder;
+      }
+
+      i++;
+    }
+
+    return '';
+  };
+
+  const [placeholder, setPlaceholder] = useState<string>(getRandomPlaceHolder());
 
   return (
     <Modal
@@ -43,7 +80,7 @@ export const ModalAddPlayer = ({ visible, playerNames, onValidateModal, onCloseM
           <TextInput
             onChangeText={onPlayerNameChange}
             value={newPlayer}
-            placeholder='Carmina Burrata'
+            placeholder={placeholder}
             keyboardType='numeric'
             style={styles.inputText}
           />

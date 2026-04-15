@@ -1,8 +1,7 @@
 import { Player } from "./player";
 
-export const playersMock: Array<Player> = [
-    { "name": "ant", "scores": [] },
-    { "name": "apo", "scores": [] },
-    { "name": "oro", "scores": [] },
-
+export const playersMock: Player[] = [
+  { name: "ant", scores: [], turnCount: 0 },
+  { name: "apo", scores: [], turnCount: 0 },
+  { name: "oro", scores: [], turnCount: 0 },
 ];

@@ -1,22 +1,26 @@
 import { Platform, StyleSheet, View } from 'react-native';
 
+import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
+import { ButtonBankScore } from '@/components/btn-bank-score';
+import { ButtonFailed } from '@/components/btn-failed';
 import { ButtonMultiplicator } from '@/components/btn-multiplicator/btn-multiplicator';
+import { playersMock } from '@/components/player/players.mock';
+import { ButtonRollback } from '@/components/rollback/btn-rollback';
+import { ModalRollback } from '@/components/rollback/modal-rollback';
 import { ButtonScore } from '@/components/score-buttons/button-score';
 import { ScoreDisplayer } from '@/components/score-displayer/score-displayer';
+import { ScoreList } from '@/components/scores/score-list';
+import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
+import { turnService } from '@/components/turns/turn.service';
 import { WebBadge } from '@/components/web-badge';
+import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Dice, DiceName, Die } from '@/constants/dice-values';
-import { ButtonRollback } from '@/components/btn-rollback/btn-rollback';
-import { ButtonBankScore } from '@/components/btn-bank-score';
-import { ScoreList } from '@/components/scores/score-list';
-import { scoreService } from '@/components/scores/scores.service';
-import { ButtonFailed } from '@/components/btn-failed';
-import { turnService } from '@/components/turns/turn.service';
-import { playersMock } from '@/components/player/players.mock';
-import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
+import { AddMissCommand } from '../components/scores/commands/add-miss.command';
+import { AddScoreCommand } from '../components/scores/commands/add-score.command';
+import { CommandHistory } from '../components/scores/commands/command-history';
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 1;
@@ -26,6 +30,9 @@ export default function PlayPage() {
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
   const [scoresAdded, setScoresAdded] = useState([] as number[]);
   const [playerList, setPlayerList] = useState(playersMock);
+  const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
+
+  const commandHistory = new CommandHistory();
 
   const onMultiplicatorPressed = () => {
     if (multiplicator < 6) {
@@ -53,9 +60,12 @@ export default function PlayPage() {
   };
 
   const onBtnRollbackPressed = () => {
-    if (multiplicator > multiplicatorBaseValue) {
+    const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
+    if (multiplicator === multiplicatorBaseValue && scoresAdded.length === 0 && previousPlayer) {
+      setIsRollbackModalVisible(true);
+    } else if (multiplicator > multiplicatorBaseValue) {
       setMultiplicator(multiplicatorBaseValue);
-    } else if (scoresAdded.length != 0) {
+    } else if (scoresAdded.length !== 0) {
       const toRemove = scoresAdded[scoresAdded.length - 1];
 
       setScoresAdded(scoresAdded.slice(0, scoresAdded.length - 1));
@@ -63,12 +73,38 @@ export default function PlayPage() {
     }
   };
 
+  const onRollbackModalCancel = () => {
+    setIsRollbackModalVisible(false);
+  };
+
+  const onRollbackModalValidate = () => {
+    setIsRollbackModalVisible(false);
+
+    const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
+    if (!previousPlayer) {
+      return;
+    }
+
+    const command = commandHistory.pop();
+    if (!command) {
+      return;
+    }
+    command.undo();
+
+    setPlayerList([...playerList]);
+    setCurrentPlayer(previousPlayer);
+    setMultiplicator(multiplicatorBaseValue);
+    setScoreTentative(0);
+  };
+
   const onBtnValidatePressed = () => {
     if (scoreTentative === 0) {
       return;
     }
 
-    scoreService.saveScore(currentPlayer, scoreTentative);
+    const command = new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
+    command.execute();
+    commandHistory.push(command);
 
     setPlayerList([...playerList]);
     setScoreTentative(0);
@@ -77,7 +113,9 @@ export default function PlayPage() {
   };
 
   const onBtnFailedPressed = () => {
-    scoreService.addMissToPlayer(currentPlayer);
+    const command = new AddMissCommand(currentPlayer, scoreService, turnService);
+    command.execute();
+    commandHistory.push(command);
 
     setPlayerList([...playerList]);
     setScoreTentative(0);
@@ -86,7 +124,7 @@ export default function PlayPage() {
   };
 
   const passTurnToNextPlayer = () => {
-    const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer.name);
+    const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer);
     setCurrentPlayer(nextPlayer);
   };
 
@@ -144,6 +182,13 @@ export default function PlayPage() {
               onPressCommand={onMultiplicatorPressed}
             />
             <ButtonRollback onPressCommand={onBtnRollbackPressed} />
+            <ModalRollback
+              visible={isRollbackModalVisible}
+              lastPlayerName={turnService.getPreviousPlayer(playerList, currentPlayer)?.name}
+              onCloseModal={onRollbackModalCancel}
+              onValidateModal={onRollbackModalValidate}
+            />
+
             <ButtonBankScore onPressCommand={onBtnValidatePressed} />
           </View>
           <View style={styles.btnRow}>

@@ -9,7 +9,6 @@ import { ButtonRollback } from '@/components/rollback/btn-rollback';
 import { ModalRollback } from '@/components/rollback/modal-rollback';
 import { ButtonScore } from '@/components/score-buttons/button-score';
 import { ScoreDisplayer } from '@/components/score-displayer/score-displayer';
-import { ScoreList } from '@/components/scores/score-list';
 import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
@@ -21,6 +20,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
 import { CommandHistory } from '../components/scores/commands/command-history';
+import { ModalScore } from '../components/scores/modal-score';
+import { ScorePreview } from '../components/scores/score-preview';
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 1;
@@ -31,6 +32,17 @@ export default function PlayPage() {
   const [scoresAdded, setScoresAdded] = useState([] as number[]);
   const [playerList, setPlayerList] = useState(playersMock);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
+  const [isScoreModalVisible, setIsScoreModalVisible] = useState(false);
+
+  const onScorePreviewClick = () => {
+    setIsScoreModalVisible(true);
+  };
+
+  const onScoreModalClose = () => {
+    setIsScoreModalVisible(false);
+  };
+
+  const onDeleteUser = () => {};
 
   const commandHistory = new CommandHistory();
 
@@ -140,9 +152,16 @@ export default function PlayPage() {
           onPlayerAdded={onAddPlayer}
           playerNames={playerList.map((p) => p.name)}
         />
-        <ScoreList
+        <ScorePreview
+          currentlyPlaying={currentPlayer}
+          onClick={onScorePreviewClick}
+        />
+        <ModalScore
+          isVisible={isScoreModalVisible}
           playerScores={playerList}
           currentlyPlaying={currentPlayer}
+          onCloseModal={onScoreModalClose}
+          onDeleteUser={onDeleteUser}
         />
 
         <ScoreDisplayer score={scoreTentative} />
@@ -213,4 +232,5 @@ const styles = StyleSheet.create({
   },
   btnZone: { display: 'flex', justifyContent: 'center', alignItems: 'stretch', backgroundColor: 'red', width: '80%' },
   btnRow: { display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center' },
+  modal: { width: '100%' },
 });

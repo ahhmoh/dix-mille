@@ -13,8 +13,14 @@ export class ScoreService {
     return players;
   }
 
-  public removePlayer(players: Player[], name: string): Player[] {
-    return players.filter(player => player.name !== name)
+  /**
+   * Returns a copy of the player array without the player to remove 
+   * @param players player list to remove from
+   * @param toRemove player to remove
+   * @returns a copy of the player list without the removed player
+   */
+  public removePlayer(players: Player[], toRemove: Player): Player[] {
+    return players.filter(p => p.name !== toRemove.name);
   }
 
   public saveScore(player: Player, toSave: number): Score {

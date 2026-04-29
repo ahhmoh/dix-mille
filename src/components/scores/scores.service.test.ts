@@ -16,12 +16,12 @@ describe('ScoresService', () => {
       const players: Player[] = [];
 
       //when
-      const transformedScores = service.addPlayer(players, name);
+      const transformed = service.addPlayer(players, name);
 
       // then
-      expect(transformedScores.length).toBe(1);
-      expect(transformedScores[0].name).toBe(name);
-      expect(transformedScores[0].scores.length).toBe(0);
+      expect(transformed.length).toBe(1);
+      expect(transformed[0].name).toBe(name);
+      expect(transformed[0].scores.length).toBe(0);
     });
 
     it('should not do anything if no name passed', () => {
@@ -39,71 +39,44 @@ describe('ScoresService', () => {
     it('should not do anything if player already exist', () => {
       //given
       const playerName = 'and';
-      const players: Player[] = [{ name: playerName, scores: [], turnCount: 0 }];
+      const player: Player = { name: playerName, scores: [], turnCount: 0 }
+      const players: Player[] = [player];
 
       //when
       const transformed = service.addPlayer(players, playerName);
 
       // then
       expect(transformed.length).toBe(1);
+      expect(players[0]).toBe(player);
     });
   });
 
-  // describe("removePlayer", () => {
-  //     let scores: Scores;
+  describe("removePlayer", () => {
+    it("should remove player from a player list", () => {
+      const player: Player = { name: "and", scores: [], turnCount: 0 };
+      const players: Player[] = [
+        player,
+        { name: "abo", scores: [], turnCount: 0 },
+      ];
 
-  //     beforeEach(() => {
-  //         scores = new Scores();
-  //         service.addPlayer(scores, "ant");
-  //         service.addPlayer(scores, "apo");
-  //         service.addPlayer(scores, "oran");
-  //     });
+      const transformed = service.removePlayer(players, player);
 
-  //     it.each([
-  //         { indexToRemove: 0 },
-  //         { indexToRemove: 1 },
-  //         { indexToRemove: 2 },
-  //     ])("should remove player based on an index", ({ indexToRemove }) => {
-  //         //given
-  //         const expectedScoreLength = scores.scoresForPlayers.length - 1;
-  //         const expectedPlayerRemoved: string = scores.scoresForPlayers[indexToRemove].name;
+      expect(transformed.length).toBe(1);
+      expect(transformed[0].name).toBe("abo");
+    });
 
-  //         //when
-  //         service.removePlayer(scores, indexToRemove);
+    it("should not remove if player not in list", () => {
+      const player: Player = { name: "and", scores: [], turnCount: 0 };
+      const players: Player[] = [
+        { name: "oro", scores: [], turnCount: 0 },
+        { name: "abo", scores: [], turnCount: 0 },
+      ];
 
-  //         // then
-  //         expect(scores.scoresForPlayers.length).toBe(expectedScoreLength);
-  //         scores.scoresForPlayers
-  //             .forEach(playerScore => expect(playerScore.name).not.toBe(expectedPlayerRemoved))
-  //     });
+      const transformed = service.removePlayer(players, player);
 
-  //     it.each([
-  //         { indexToRemove: -1 },
-  //         { indexToRemove: 3 },
-  //     ])("should not do anything if index is index is out of bound", ({ indexToRemove }) => {
-  //         //given
-  //         const expectedScoreLength = scores.scoresForPlayers.length;
-
-  //         //when
-  //         service.removePlayer(scores, indexToRemove);
-
-  //         // then
-  //         expect(scores.scoresForPlayers.length).toBe(expectedScoreLength);
-  //     });
-
-  //     it("should not do anything if there are no players", () => {
-  //         //given
-  //         const scores = new Scores();
-
-  //         expect(scores.scoresForPlayers.length).toBe(0);
-
-  //         //when
-  //         service.removePlayer(scores, 1);
-
-  //         // then
-  //         expect(scores.scoresForPlayers.length).toBe(0);
-  //     });
-  // });
+      expect(transformed.length).toBe(2);
+    });
+  });
 
   describe('saveScore', () => {
     it('should add a new score for player', () => {

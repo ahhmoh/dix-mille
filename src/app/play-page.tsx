@@ -17,6 +17,7 @@ import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Player } from '../components/player/player';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
 import { CommandHistory } from '../components/scores/commands/command-history';
@@ -42,7 +43,15 @@ export default function PlayPage() {
     setIsScoreModalVisible(false);
   };
 
-  const onDeleteUser = () => {};
+  const onDeleteUser = (player: Player) => {
+    if (currentPlayer.name === player.name) {
+      const nextPlayer = turnService.getNextPlayer(playerList, player);
+      setCurrentPlayer({ ...nextPlayer });
+    }
+
+    const listWithoutPlayer = scoreService.removePlayer(playerList, player);
+    setPlayerList([...listWithoutPlayer]);
+  };
 
   const commandHistory = new CommandHistory();
 
@@ -137,7 +146,7 @@ export default function PlayPage() {
 
   const passTurnToNextPlayer = () => {
     const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer);
-    setCurrentPlayer(nextPlayer);
+    setCurrentPlayer({ ...nextPlayer });
   };
 
   const onAddPlayer = (playerName: string) => {

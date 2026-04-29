@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Player } from '../player/player';
+import { ModalDeletePlayer } from './delete-player/modal-delete-player';
 import { scoreService } from './scores.service';
 
 type ModalScoreProps = {
@@ -13,6 +14,21 @@ type ModalScoreProps = {
 
 export function ModalScore({ isVisible, playerScores, currentlyPlaying, onCloseModal, onDeleteUser }: ModalScoreProps) {
   const data = (playerScores && Object.values(playerScores)) || [];
+
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [playerToDelete, setPlayerToDelete] = useState<Player | undefined>(undefined);
+
+  const onDeleteBtnPressed = (player: Player) => {
+    setPlayerToDelete(player);
+    setIsDeleteModalVisible(true);
+  };
+
+  const onDeleteModalCancel = () => setIsDeleteModalVisible(false);
+
+  const onDeleteModalValidate = (player: Player) => {
+    setIsDeleteModalVisible(false);
+    onDeleteUser(player);
+  };
 
   const renderScore = ({ item }: { item: Player }) => {
     const playerName = item?.name ?? '';
@@ -42,9 +58,14 @@ export function ModalScore({ isVisible, playerScores, currentlyPlaying, onCloseM
           {'|'.repeat(misses)}
         </Text>
 
-        <Pressable style={({ pressed }) => (pressed ? [styles.btnDelete, styles.btnDeletePressed] : styles.btnDelete)}>
-          <Text style={styles.btnDeleteText}>X</Text>
-        </Pressable>
+        {playerScores.length !== 1 && (
+          <Pressable
+            onPress={() => onDeleteBtnPressed(item)}
+            style={({ pressed }) => (pressed ? [styles.btnDelete, styles.btnDeletePressed] : styles.btnDelete)}
+          >
+            <Text style={styles.btnDeleteText}>X</Text>
+          </Pressable>
+        )}
       </View>
     );
   };
@@ -74,6 +95,15 @@ export function ModalScore({ isVisible, playerScores, currentlyPlaying, onCloseM
           >
             <Text style={styles.textBtn}>OK</Text>
           </Pressable>
+
+          {playerToDelete && (
+            <ModalDeletePlayer
+              isVisible={isDeleteModalVisible}
+              player={playerToDelete}
+              onCancel={onDeleteModalCancel}
+              onValidate={onDeleteModalValidate}
+            />
+          )}
         </View>
       </View>
     </Modal>

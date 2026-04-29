@@ -2,7 +2,7 @@ import { Player } from "../player/player";
 
 export class TurnService {
   public getPlayerOrder(players: Array<Player>, player: Player): number {
-    const order = players.findIndex(p => player === p);
+    const order = players.findIndex(p => player.name === p.name);
     if (order === -1) {
       throw new Error(`Player '${player}' is not part of the players array`);
     }

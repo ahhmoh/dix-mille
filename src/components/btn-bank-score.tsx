@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, StyleSheet } from 'react-native';
 
 type ButtonBankScoreProps = { onPressCommand?: any };
 
@@ -8,14 +9,18 @@ export function ButtonBankScore({ onPressCommand }: ButtonBankScoreProps) {
       onPress={onPressCommand}
       style={({ pressed }) => [styles.button, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
     >
-      <Text style={styles.text}>OK</Text>
+      <Ionicons
+        name='checkmark-sharp'
+        size={60}
+        color='black'
+      />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: '#06402B' },
-  backgroundPressed: { backgroundColor: '#17d590' },
+  backgroundIdle: { backgroundColor: '#17d590' },
+  backgroundPressed: { backgroundColor: '#96d5be' },
   button: {
     display: 'flex',
     justifyContent: 'center',

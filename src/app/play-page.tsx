@@ -1,5 +1,6 @@
 import { Platform, StyleSheet, View } from 'react-native';
 
+import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
 import { ButtonBankScore } from '@/components/btn-bank-score';
 import { ButtonFailed } from '@/components/btn-failed';
 import { ButtonMultiplicator } from '@/components/btn-multiplicator/btn-multiplicator';
@@ -156,17 +157,20 @@ export default function PlayPage() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
+        <ButtonAddPlayer
+          onPlayerAdded={onAddPlayer}
+          playerNames={playerList.map((p) => p.name)}
+        />
         <ScorePreview
           currentlyPlaying={currentPlayer}
           onClick={onScorePreviewClick}
         />
         <ModalScore
           isVisible={isScoreModalVisible}
-          players={playerList}
+          playerScores={playerList}
           currentlyPlaying={currentPlayer}
           onCloseModal={onScoreModalClose}
           onDeleteUser={onDeleteUser}
-          onAddPlayer={onAddPlayer}
         />
 
         <ScoreDisplayer score={scoreTentative} />

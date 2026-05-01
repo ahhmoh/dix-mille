@@ -1,28 +1,19 @@
 import React, { useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { ButtonAddPlayer } from '../add-player/btn-add-player';
 import { Player } from '../player/player';
 import { ModalDeletePlayer } from './delete-player/modal-delete-player';
 import { scoreService } from './scores.service';
 
 type ModalScoreProps = {
   isVisible: boolean;
-  players: Player[];
+  playerScores: Player[];
   currentlyPlaying: Player;
   onCloseModal: () => void;
   onDeleteUser: (player: Player) => void;
-  onAddPlayer: (name: string) => void;
 };
 
-export function ModalScore({
-  isVisible,
-  players,
-  currentlyPlaying,
-  onCloseModal,
-  onDeleteUser,
-  onAddPlayer,
-}: ModalScoreProps) {
-  const data = (players && Object.values(players)) || [];
+export function ModalScore({ isVisible, playerScores, currentlyPlaying, onCloseModal, onDeleteUser }: ModalScoreProps) {
+  const data = (playerScores && Object.values(playerScores)) || [];
 
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [playerToDelete, setPlayerToDelete] = useState<Player | undefined>(undefined);
@@ -67,7 +58,7 @@ export function ModalScore({
           {'|'.repeat(misses)}
         </Text>
 
-        {players.length !== 1 && (
+        {playerScores.length !== 1 && (
           <Pressable
             onPress={() => onDeleteBtnPressed(item)}
             style={({ pressed }) => (pressed ? [styles.btnDelete, styles.btnDeletePressed] : styles.btnDelete)}
@@ -88,10 +79,6 @@ export function ModalScore({
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.title}>Scores</Text>
-          <ButtonAddPlayer
-            onPlayerAdded={onAddPlayer}
-            playerNames={players.map((p) => p.name)}
-          />
           <View style={styles.list}>
             <FlatList
               style={styles.list}
@@ -106,7 +93,7 @@ export function ModalScore({
             style={({ pressed }) => [styles.button, pressed ? styles.buttonValidatePressed : styles.buttonValidate]}
             onPress={onCloseModal}
           >
-            <Text style={styles.textBtn}>Fermer</Text>
+            <Text style={styles.textBtn}>OK</Text>
           </Pressable>
 
           {playerToDelete && (

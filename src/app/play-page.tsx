@@ -18,6 +18,7 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Player } from '../components/player/player';
+import { ButtonResetGame } from '../components/reset-game/btn-reset-game';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
 import { CommandHistory } from '../components/scores/commands/command-history';
@@ -27,7 +28,7 @@ import { ScorePreview } from '../components/scores/score-preview';
 export default function PlayPage() {
   const multiplicatorBaseValue = 1;
 
-  const [currentPlayer, setCurrentPlayer] = useState(playersMock[0]);
+  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(playersMock[0]);
   const [scoreTentative, setScoreTentative] = useState(0);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
   const [scoresAdded, setScoresAdded] = useState([] as number[]);
@@ -44,9 +45,12 @@ export default function PlayPage() {
   };
 
   const onDeleteUser = (player: Player) => {
-    if (currentPlayer.name === player.name) {
+    if (currentPlayer?.name === player.name) {
       const nextPlayer = turnService.getNextPlayer(playerList, player);
-      setCurrentPlayer({ ...nextPlayer });
+
+      if (nextPlayer) {
+        setCurrentPlayer({ ...nextPlayer });
+      }
     }
 
     const listWithoutPlayer = scoreService.removePlayer(playerList, player);
@@ -56,12 +60,18 @@ export default function PlayPage() {
   const commandHistory = new CommandHistory();
 
   const onMultiplicatorPressed = () => {
-    if (multiplicator < 6) {
+    if (!currentPlayer) {
+      return;
+    } else if (multiplicator < 6) {
       setMultiplicator(multiplicator + 1);
     }
   };
 
   const onBtnScorePressed = (die: Die) => {
+    if (!currentPlayer) {
+      return;
+    }
+
     const atLeast3Dice = multiplicator >= 3;
     let toAdd: number = 0;
 
@@ -81,6 +91,10 @@ export default function PlayPage() {
   };
 
   const onBtnRollbackPressed = () => {
+    if (!currentPlayer) {
+      return;
+    }
+
     const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
     if (multiplicator === multiplicatorBaseValue && scoresAdded.length === 0 && previousPlayer) {
       setIsRollbackModalVisible(true);
@@ -101,6 +115,10 @@ export default function PlayPage() {
   const onRollbackModalValidate = () => {
     setIsRollbackModalVisible(false);
 
+    if (!currentPlayer) {
+      return;
+    }
+
     const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
     if (!previousPlayer) {
       return;
@@ -119,7 +137,7 @@ export default function PlayPage() {
   };
 
   const onBtnValidatePressed = () => {
-    if (scoreTentative === 0) {
+    if (scoreTentative === 0 || !currentPlayer) {
       return;
     }
 
@@ -134,6 +152,10 @@ export default function PlayPage() {
   };
 
   const onBtnFailedPressed = () => {
+    if (!currentPlayer) {
+      return;
+    }
+
     const command = new AddMissCommand(currentPlayer, scoreService, turnService);
     command.execute();
     commandHistory.push(command);
@@ -145,22 +167,60 @@ export default function PlayPage() {
   };
 
   const passTurnToNextPlayer = () => {
+    if (!currentPlayer) {
+      return;
+    }
+
     const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer);
-    setCurrentPlayer({ ...nextPlayer });
+    if (nextPlayer) {
+      setCurrentPlayer({ ...nextPlayer });
+    }
   };
 
   const onAddPlayer = (playerName: string) => {
-    scoreService.addPlayer(playerList, playerName);
-    setPlayerList([...playerList]);
+    const players = scoreService.addPlayer(playerList, playerName);
+    setPlayerList([...players]);
+
+    if (!currentPlayer && players.length != 0) {
+      setCurrentPlayer(players[0]);
+    }
+  };
+
+  const onResetGameCompletely = () => {
+    commandHistory.reset();
+    setPlayerList([]);
+    setScoreTentative(0);
+    setScoresAdded([]);
+    setCurrentPlayer(undefined);
+  };
+
+  const onResetGameKeepingPlayers = () => {
+    commandHistory.reset();
+    const players: Player[] = scoreService.resetAllPlayers(playerList);
+    setPlayerList([...players]);
+    setScoreTentative(0);
+    setScoresAdded([]);
+
+    if (players.length != 0) {
+      setCurrentPlayer({ ...players[0] });
+    }
   };
 
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ButtonAddPlayer
-          onPlayerAdded={onAddPlayer}
-          playerNames={playerList.map((p) => p.name)}
-        />
+        <View style={styles.topBtnRow}>
+          <ButtonAddPlayer
+            onPlayerAdded={onAddPlayer}
+            playerNames={playerList.map((p) => p.name)}
+          />
+
+          <ButtonResetGame
+            onResetCompletely={onResetGameCompletely}
+            onResetKeepingPlayers={onResetGameKeepingPlayers}
+          />
+        </View>
+
         <ScorePreview
           currentlyPlaying={currentPlayer}
           onClick={onScorePreviewClick}
@@ -210,12 +270,15 @@ export default function PlayPage() {
               onPressCommand={onMultiplicatorPressed}
             />
             <ButtonRollback onPressCommand={onBtnRollbackPressed} />
-            <ModalRollback
-              visible={isRollbackModalVisible}
-              lastPlayerName={turnService.getPreviousPlayer(playerList, currentPlayer)?.name}
-              onCloseModal={onRollbackModalCancel}
-              onValidateModal={onRollbackModalValidate}
-            />
+
+            {currentPlayer && (
+              <ModalRollback
+                visible={isRollbackModalVisible}
+                lastPlayerName={turnService.getPreviousPlayer(playerList, currentPlayer)?.name}
+                onCloseModal={onRollbackModalCancel}
+                onValidateModal={onRollbackModalValidate}
+              />
+            )}
 
             <ButtonBankScore onPressCommand={onBtnValidatePressed} />
           </View>
@@ -239,6 +302,7 @@ const styles = StyleSheet.create({
     paddingBottom: BottomTabInset + Spacing.three,
     maxWidth: MaxContentWidth,
   },
+  topBtnRow: { flexDirection: 'row' },
   btnZone: { display: 'flex', justifyContent: 'center', alignItems: 'stretch', backgroundColor: 'red', width: '80%' },
   btnRow: { display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center' },
   modal: { width: '100%' },

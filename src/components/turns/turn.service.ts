@@ -10,14 +10,22 @@ export class TurnService {
     return order;
   }
 
-  public getNextPlayer(players: Array<Player>, current: Player): Player {
+  public getNextPlayer(players: Array<Player>, current: Player | undefined): Player | undefined {
+    if (!current) {
+      return undefined;
+    }
+
     const currentPlayerOrder = this.getPlayerOrder(players, current);
     return currentPlayerOrder === players.length - 1 ?
       players[0]
       : players[currentPlayerOrder + 1];
   }
 
-  public getPreviousPlayer(players: Array<Player>, current: Player): Player | undefined {
+  public getPreviousPlayer(players: Array<Player>, current: Player | undefined): Player | undefined {
+    if (!current) {
+      return undefined;
+    }
+
     const currentPlayerOrder = this.getPlayerOrder(players, current);
     const previousPlayer = currentPlayerOrder === 0 ?
       players[players.length - 1]

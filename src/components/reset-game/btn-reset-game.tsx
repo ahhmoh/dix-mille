@@ -1,19 +1,24 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { ModalAddPlayer } from './modal-add-player';
+import { ModalResetGame } from './modal-reset-game';
 
-type ButtonAddPlayerProps = { onPlayerAdded: (playerName: string) => void; playerNames: string[] };
+type ButtonResetGameProps = { onResetKeepingPlayers: () => void; onResetCompletely: () => void };
 
-export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerProps) {
+export function ButtonResetGame({ onResetKeepingPlayers, onResetCompletely }: ButtonResetGameProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const onOpenModalPressed = () => {
     setModalVisible(true);
   };
 
-  const onModalValidated = (playerName: string) => {
-    onPlayerAdded(playerName);
+  const onModalValidatedKeepingPlayersReset = () => {
+    onResetKeepingPlayers();
+    setModalVisible(false);
+  };
+
+  const onModalValidatedCompleteReset = () => {
+    onResetCompletely();
     setModalVisible(false);
   };
 
@@ -23,10 +28,10 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
 
   return (
     <View>
-      <ModalAddPlayer
+      <ModalResetGame
         visible={modalVisible}
-        playerNames={playerNames}
-        onValidateModal={onModalValidated}
+        onValidateModalCompleteReset={onModalValidatedCompleteReset}
+        onValidateModalPartialReset={onModalValidatedKeepingPlayersReset}
         onCloseModal={onModalClosed}
       />
       <Pressable
@@ -34,7 +39,7 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
         style={({ pressed }) => [styles.btn, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
       >
         <Ionicons
-          name='person-add'
+          name='sync'
           size={40}
           color='black'
         />

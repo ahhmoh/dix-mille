@@ -10,4 +10,8 @@ export class CommandHistory {
   public pop(): Command | undefined {
     return this.commands.pop();
   }
+
+  public reset() {
+    this.commands = [];
+  }
 }

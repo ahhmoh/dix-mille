@@ -39,7 +39,7 @@ describe('ScoresService', () => {
     it('should not do anything if player already exist', () => {
       //given
       const playerName = 'and';
-      const player: Player = { name: playerName, scores: [], turnCount: 0 }
+      const player: Player = { name: playerName, scores: [], turnCount: 0 };
       const players: Player[] = [player];
 
       //when
@@ -51,25 +51,22 @@ describe('ScoresService', () => {
     });
   });
 
-  describe("removePlayer", () => {
-    it("should remove player from a player list", () => {
-      const player: Player = { name: "and", scores: [], turnCount: 0 };
-      const players: Player[] = [
-        player,
-        { name: "abo", scores: [], turnCount: 0 },
-      ];
+  describe('removePlayer', () => {
+    it('should remove player from a player list', () => {
+      const player: Player = { name: 'and', scores: [], turnCount: 0 };
+      const players: Player[] = [player, { name: 'abo', scores: [], turnCount: 0 }];
 
       const transformed = service.removePlayer(players, player);
 
       expect(transformed.length).toBe(1);
-      expect(transformed[0].name).toBe("abo");
+      expect(transformed[0].name).toBe('abo');
     });
 
-    it("should not remove if player not in list", () => {
-      const player: Player = { name: "and", scores: [], turnCount: 0 };
+    it('should not remove if player not in list', () => {
+      const player: Player = { name: 'and', scores: [], turnCount: 0 };
       const players: Player[] = [
-        { name: "oro", scores: [], turnCount: 0 },
-        { name: "abo", scores: [], turnCount: 0 },
+        { name: 'oro', scores: [], turnCount: 0 },
+        { name: 'abo', scores: [], turnCount: 0 },
       ];
 
       const transformed = service.removePlayer(players, player);
@@ -338,6 +335,116 @@ describe('ScoresService', () => {
       const score = service.getLastValidScore(player);
 
       expect(score).toBeUndefined();
+    });
+  });
+
+  describe('resetPlayer', () => {
+    it('should remove all scores from player', () => {
+      const player = {
+        name: 'ant',
+        scores: [
+          { value: 100, misses: 3 },
+          { value: 200, misses: 3 },
+          { value: 300, misses: 3 },
+        ],
+        turnCount: 0,
+      };
+
+      const updated = service.resetPlayer(player);
+
+      expect(updated.scores).toStrictEqual([]);
+    });
+
+    it('should not score array if no scores present', () => {
+      const player = { name: 'ant', scores: [], turnCount: 0 };
+
+      const updated = service.resetPlayer(player);
+
+      expect(updated.scores).toStrictEqual([]);
+    });
+
+    it('should set turnCount to 0', () => {
+      const player = { name: 'ant', scores: [], turnCount: 2 };
+
+      const updated = service.resetPlayer(player);
+
+      expect(updated.turnCount).toBe(0);
+    });
+
+    it('should not change turnCount if already at 0', () => {
+      const player = { name: 'ant', scores: [], turnCount: 0 };
+
+      const updated = service.resetPlayer(player);
+
+      expect(updated.turnCount).toBe(0);
+    });
+  });
+
+  describe('resetAllPlayers', () => {
+    it('should remove all scores from all players', () => {
+      const players = [
+        {
+          name: 'ant',
+          scores: [
+            { value: 100, misses: 3 },
+            { value: 200, misses: 3 },
+          ],
+          turnCount: 2,
+        },
+        {
+          name: 'oro',
+          scores: [
+            { value: 100, misses: 3 },
+            { value: 200, misses: 3 },
+          ],
+          turnCount: 2,
+        },
+      ];
+
+      const updated = service.resetAllPlayers(players);
+
+      updated.forEach((player) => {
+        expect(player.scores).toStrictEqual([]);
+      });
+    });
+
+    it('should not do anything if no scores present', () => {
+      const players = [
+        { name: 'ant', scores: [], turnCount: 0 },
+        { name: 'oro', scores: [], turnCount: 0 },
+      ];
+
+      const updated = service.resetAllPlayers(players);
+
+      updated.forEach((player) => {
+        expect(player.scores).toStrictEqual([]);
+      });
+    });
+
+    it('should reset all turnCounts', () => {
+      const players = [
+        { name: 'ant', scores: [], turnCount: 15 },
+        { name: 'oro', scores: [], turnCount: 3097 },
+      ];
+
+      const updated = service.resetAllPlayers(players);
+
+      updated.forEach((player) => {
+        expect(player.turnCount).toBe(0);
+      });
+    });
+
+    it('should not change turnCounts if already at 0', () => {
+      const players = [
+        { name: 'ant', scores: [], turnCount: 0 },
+        { name: 'oro', scores: [], turnCount: 0 },
+      ];
+
+      const updated = service.resetAllPlayers(players);
+
+      updated.forEach((player) => {
+        expect(player.turnCount).toBe(0);
+      });
     });
   });
 });

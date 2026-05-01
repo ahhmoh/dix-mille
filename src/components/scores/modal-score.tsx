@@ -7,7 +7,7 @@ import { scoreService } from './scores.service';
 type ModalScoreProps = {
   isVisible: boolean;
   playerScores: Player[];
-  currentlyPlaying: Player;
+  currentlyPlaying?: Player;
   onCloseModal: () => void;
   onDeleteUser: (player: Player) => void;
 };
@@ -35,7 +35,7 @@ export function ModalScore({ isVisible, playerScores, currentlyPlaying, onCloseM
     const lastScore = scoreService.getLastValidScore(item);
     const scoreValue = lastScore?.value || 0;
     const misses = lastScore?.misses || 0;
-    const isCurrentlyPlaying = item.name === currentlyPlaying.name;
+    const isCurrentlyPlaying = item.name === currentlyPlaying?.name;
 
     return (
       <View style={styles.rowPlayer}>

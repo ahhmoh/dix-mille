@@ -87,6 +87,21 @@ export class ScoreService {
   public getLastValidScore(player: Player): Score | undefined {
     return player.scores.toReversed().find(score => score.misses < 3);
   }
+
+  public resetAllPlayers(players: Player[]): Player[] {
+    for (let i = 0; i < players.length; i++) {
+      const reseted = this.resetPlayer(players[i]);
+      players[i] = reseted;
+    }
+
+    return players;
+  }
+
+  public resetPlayer(player: Player): Player {
+    player.scores = [];
+    player.turnCount = 0;
+    return player;
+  }
 }
 
 export const scoreService = new ScoreService();

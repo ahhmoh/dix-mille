@@ -1,17 +1,20 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 type ButtonRollbackProps = { onPressCommand?: any };
 
 export function ButtonRollback({ onPressCommand }: ButtonRollbackProps) {
-  const rollbackSymbol = '<=';
-
   return (
     <Pressable
       onPress={onPressCommand}
       style={({ pressed }) => [styles.btnMultiplicator, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
     >
-      <Text style={styles.text}>{rollbackSymbol}</Text>
+      <Ionicons
+        name='arrow-undo'
+        size={40}
+        color='black'
+      />{' '}
     </Pressable>
   );
 }

@@ -5,7 +5,7 @@ import { ModalAddPlayer } from './modal-add-player';
 type ButtonAddPlayerProps = { onPlayerAdded: (playerName: string) => void; playerNames: string[] };
 
 export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerProps) {
-  const content = '+';
+  const content = 'Ajouter joueur.euse';
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 60,
+    width: 200,
     height: 60,
     borderWidth: 2,
     borderColor: 'black',
     borderRadius: 10,
     margin: 7,
   },
-  text: { fontSize: 40 },
+  text: { fontSize: 17 },
 });

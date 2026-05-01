@@ -1,5 +1,6 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { ModalAddPlayer } from './modal-add-player';
 
 type ButtonAddPlayerProps = { onPlayerAdded: (playerName: string) => void; playerNames: string[] };
@@ -34,7 +35,11 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
         onPress={onOpenModalPressed}
         style={({ pressed }) => [styles.btn, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
       >
-        <Text style={styles.text}>{content}</Text>
+        <Ionicons
+          name='person-add'
+          size={40}
+          color='black'
+        />
       </Pressable>
     </View>
   );

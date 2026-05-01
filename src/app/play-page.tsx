@@ -14,7 +14,7 @@ import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
 import { WebBadge } from '@/components/web-badge';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Player } from '../components/player/player';
@@ -221,19 +221,23 @@ export default function PlayPage() {
           />
         </View>
 
-        <ScorePreview
-          currentlyPlaying={currentPlayer}
-          onClick={onScorePreviewClick}
-        />
-        <ModalScore
-          isVisible={isScoreModalVisible}
-          playerScores={playerList}
-          currentlyPlaying={currentPlayer}
-          onCloseModal={onScoreModalClose}
-          onDeleteUser={onDeleteUser}
-        />
+        <View style={styles.previewZone}>
+          <ScorePreview
+            currentlyPlaying={currentPlayer}
+            onClick={onScorePreviewClick}
+          />
+          <ModalScore
+            isVisible={isScoreModalVisible}
+            playerScores={playerList}
+            currentlyPlaying={currentPlayer}
+            onCloseModal={onScoreModalClose}
+            onDeleteUser={onDeleteUser}
+          />
+        </View>
 
-        <ScoreDisplayer score={scoreTentative} />
+        <View style={styles.tentativeScoreZone}>
+          <ScoreDisplayer score={scoreTentative} />
+        </View>
 
         <View style={styles.btnZone}>
           <View style={styles.btnRow}>
@@ -294,16 +298,16 @@ export default function PlayPage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', flexDirection: 'row' },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  safeArea: { flex: 1, alignItems: 'center', gap: Spacing.three, maxWidth: MaxContentWidth },
+  topBtnRow: { flex: 1, flexDirection: 'row' },
+  previewZone: { flex: 1 },
+  tentativeScoreZone: { flex: 1 },
+  btnZone: { flex: 5, display: 'flex', justifyContent: 'center', alignItems: 'stretch', width: '70%' },
+  btnRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    marginTop: 10,
   },
-  topBtnRow: { flexDirection: 'row' },
-  btnZone: { display: 'flex', justifyContent: 'center', alignItems: 'stretch', backgroundColor: 'red', width: '80%' },
-  btnRow: { display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center' },
-  modal: { width: '100%' },
 });

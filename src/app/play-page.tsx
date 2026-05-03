@@ -1,14 +1,6 @@
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
-import { ButtonBankScore } from '@/components/btn-bank-score';
-import { ButtonFailed } from '@/components/btn-failed';
-import { ButtonMultiplicator } from '@/components/btn-multiplicator/btn-multiplicator';
-import { playersMock } from '@/components/player/players.mock';
-import { ButtonRollback } from '@/components/rollback/btn-rollback';
-import { ModalRollback } from '@/components/rollback/modal-rollback';
-import { ButtonScore } from '@/components/score-buttons/button-score';
-import { ScoreDisplayer } from '@/components/score-displayer/score-displayer';
 import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
@@ -17,8 +9,15 @@ import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ButtonBankScore } from '../components/btn-bank-score';
+import { ButtonFailed } from '../components/btn-failed';
+import { ButtonMultiplicator } from '../components/btn-multiplicator/btn-multiplicator';
 import { Player } from '../components/player/player';
 import { ButtonResetGame } from '../components/reset-game/btn-reset-game';
+import { ButtonRollback } from '../components/rollback/btn-rollback';
+import { ModalRollback } from '../components/rollback/modal-rollback';
+import { ButtonScore } from '../components/score-buttons/button-score';
+import { ScoreDisplayer } from '../components/score-displayer/score-displayer';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
 import { CommandHistory } from '../components/scores/commands/command-history';
@@ -28,11 +27,11 @@ import { ScorePreview } from '../components/scores/score-preview';
 export default function PlayPage() {
   const multiplicatorBaseValue = 1;
 
-  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(playersMock[0]);
+  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
-  const [scoresAdded, setScoresAdded] = useState([] as number[]);
-  const [playerList, setPlayerList] = useState(playersMock);
+  const [scoresAdded, setScoresAdded] = useState<number[]>([]);
+  const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
   const [isScoreModalVisible, setIsScoreModalVisible] = useState(false);
 
@@ -298,16 +297,10 @@ export default function PlayPage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', flexDirection: 'row' },
-  safeArea: { flex: 1, alignItems: 'center', gap: Spacing.three, maxWidth: MaxContentWidth },
-  topBtnRow: { flex: 1, flexDirection: 'row' },
+  safeArea: { flex: 1, gap: Spacing.three, maxWidth: MaxContentWidth },
+  topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
   previewZone: { flex: 1 },
-  tentativeScoreZone: { flex: 1 },
-  btnZone: { flex: 5, display: 'flex', justifyContent: 'center', alignItems: 'stretch', width: '70%' },
-  btnRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'center',
-    marginTop: 10,
-  },
+  tentativeScoreZone: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  btnZone: { flex: 4, justifyContent: 'center', paddingRight: 60, paddingLeft: 60 },
+  btnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' },
 });

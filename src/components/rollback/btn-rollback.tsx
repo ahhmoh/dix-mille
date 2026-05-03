@@ -14,7 +14,7 @@ export function ButtonRollback({ onPressCommand }: ButtonRollbackProps) {
         name='arrow-undo'
         size={40}
         color='black'
-      />{' '}
+      />
     </Pressable>
   );
 }

@@ -25,7 +25,7 @@ export const ModalResetGame = ({
 
           <View style={styles.buttonColumn}>
             <Pressable
-              style={[styles.button, styles.buttonCancel]}
+              style={({ pressed }) => [styles.button, pressed ? styles.buttonCancelPressed : styles.buttonCancel]}
               onPress={onCloseModal}
             >
               <Text style={styles.btnTextStyle}>Non</Text>
@@ -64,9 +64,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  buttonColumn: { flexDirection: 'column', justifyContent: 'center', alignItems: 'center' },
+  buttonColumn: { flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch' },
   button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5 },
   buttonCancel: { backgroundColor: '#e01422' },
+  buttonCancelPressed: { backgroundColor: '#e07980' },
   buttonValidate: { backgroundColor: '#2196F3' },
   buttonValidatePressed: { backgroundColor: '#69b5f4' },
   btnTextStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },

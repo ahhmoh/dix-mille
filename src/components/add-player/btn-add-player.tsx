@@ -1,4 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { ModalAddPlayer } from './modal-add-player';
@@ -23,12 +23,6 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
 
   return (
     <View>
-      <ModalAddPlayer
-        visible={modalVisible}
-        playerNames={playerNames}
-        onValidateModal={onModalValidated}
-        onCloseModal={onModalClosed}
-      />
       <Pressable
         onPress={onOpenModalPressed}
         style={({ pressed }) => [styles.btn, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
@@ -39,6 +33,13 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
           color='black'
         />
       </Pressable>
+
+      <ModalAddPlayer
+        visible={modalVisible}
+        playerNames={playerNames}
+        onValidateModal={onModalValidated}
+        onCloseModal={onModalClosed}
+      />
     </View>
   );
 }

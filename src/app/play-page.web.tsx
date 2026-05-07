@@ -5,7 +5,7 @@ import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ButtonBankScore } from '../components/btn-bank-score';
@@ -295,10 +295,10 @@ export default function PlayPage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', flexDirection: 'row' },
-  safeArea: { flex: 1, gap: Spacing.three, maxWidth: MaxContentWidth },
+  safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
   topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
   previewZone: { flex: 1 },
   tentativeScoreZone: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  btnZone: { flex: 4, justifyContent: 'center', paddingRight: 60, paddingLeft: 60 },
-  btnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' },
+  btnZone: { flex: 3, justifyContent: 'center', paddingRight: 70, paddingLeft: 70, paddingBottom: 20 },
+  btnRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 },
 });

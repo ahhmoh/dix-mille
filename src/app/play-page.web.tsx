@@ -296,7 +296,7 @@ export default function PlayPage() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', flexDirection: 'row' },
   safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
-  topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+  topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
   previewZone: { flex: 1 },
   tentativeScoreZone: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   btnZone: { flex: 3, justifyContent: 'center', paddingRight: 70, paddingLeft: 70, paddingBottom: 20 },

@@ -41,7 +41,7 @@ export function ButtonResetGame({ onResetKeepingPlayers, onResetCompletely }: Bu
       >
         <Ionicons
           name='sync'
-          size={40}
+          size={47}
           color={colors.primary}
         />
       </Pressable>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { colors } from '../../constants/theme';
 
 interface ModalAddPlayerProps {
   visible: boolean;
@@ -68,6 +69,16 @@ export const ModalAddPlayer = ({ visible, playerNames, onValidateModal, onCloseM
 
   const [placeholder, setPlaceholder] = useState<string>(getRandomPlaceHolder());
 
+  const computeBtnValidateStyle = (isPlayerValid: boolean, isPressed: boolean) => {
+    if (!isPlayerValid) {
+      return [styles.button, styles.buttonValidateDisabled];
+    } else if (isPressed) {
+      return [styles.button, styles.buttonValidatePressed];
+    } else {
+      return [styles.button, styles.buttonValidate];
+    }
+  };
+
   return (
     <Modal
       animationType='slide'
@@ -86,13 +97,13 @@ export const ModalAddPlayer = ({ visible, playerNames, onValidateModal, onCloseM
           />
           <View style={styles.buttonRow}>
             <Pressable
-              style={[styles.button, styles.buttonClose]}
+              style={({ pressed }) => [styles.button, pressed ? styles.buttonClosePressed : styles.buttonClose]}
               onPress={onCancel}
             >
               <Text style={styles.textStyle}>Annuler</Text>
             </Pressable>
             <Pressable
-              style={[styles.button, isNewPlayerValid ? styles.buttonValidate : styles.buttonValidateDisabled]}
+              style={({ pressed }) => computeBtnValidateStyle(isNewPlayerValid, pressed)}
               onPress={onValidatePlayer}
               disabled={!isNewPlayerValid}
             >
@@ -109,23 +120,34 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   buttonRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5 },
-  buttonClose: { backgroundColor: '#e01422' },
-  buttonValidate: { backgroundColor: '#2196F3' },
-  buttonValidateDisabled: { backgroundColor: '#cbe2f6' },
+  buttonClose: { backgroundColor: colors.primary },
+  buttonClosePressed: { backgroundColor: colors.secondary },
+  buttonValidate: { backgroundColor: colors.primary },
+  buttonValidateDisabled: { backgroundColor: colors.secondary },
+  buttonValidatePressed: { backgroundColor: colors.secondary },
   textStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
-  modalText: { marginBottom: 15, textAlign: 'center' },
-  inputText: { marginBottom: 15, textAlign: 'center', width: '100%' },
+  modalText: { marginBottom: 15, textAlign: 'center', color: colors.primary, fontWeight: 'bold' },
+  inputText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: colors.primary,
+    color: colors.primary,
+  },
 });

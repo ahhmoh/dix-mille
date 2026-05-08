@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../constants/theme';
 import { Player } from '../player/player';
 import { Score } from './scores';
 import { scoreService } from './scores.service';
@@ -32,7 +33,7 @@ export function ScorePreview({ currentlyPlaying, onClick }: ScorePreviewProps) {
             <Ionicons
               name='ellipsis-horizontal'
               size={24}
-              color='black'
+              color={colors.primary}
             />
           </Pressable>
         </View>
@@ -64,10 +65,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'black',
-    borderWidth: 2,
+    borderColor: colors.primary,
+    borderWidth: 3,
     borderRadius: 10,
   },
-  btnInfoPressed: { backgroundColor: 'rgb(210, 230, 255)' },
-  messageNoPlayer: { fontSize: 20 },
+  btnInfoPressed: { backgroundColor: colors.secondary },
+  messageNoPlayer: { fontSize: 20, color: colors.primary, fontWeight: 'bold' },
 });

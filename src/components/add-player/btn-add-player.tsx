@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { colors } from '../../constants/theme';
 import { ModalAddPlayer } from './modal-add-player';
 
 type ButtonAddPlayerProps = { onPlayerAdded: (playerName: string) => void; playerNames: string[] };
@@ -30,7 +31,7 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
         <Ionicons
           name='person-add'
           size={40}
-          color='black'
+          color={colors.primary}
         />
       </Pressable>
 
@@ -45,16 +46,16 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: 'white' },
-  backgroundPressed: { backgroundColor: 'rgb(210, 230, 255)' },
+  backgroundIdle: { backgroundColor: colors.background },
+  backgroundPressed: { backgroundColor: colors.secondary },
   btn: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 60,
     height: 60,
-    borderWidth: 2,
-    borderColor: 'black',
+    borderWidth: 3,
+    borderColor: colors.primary,
     borderRadius: 10,
   },
   text: { fontSize: 40 },

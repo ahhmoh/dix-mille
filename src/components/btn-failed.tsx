@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
+import { colors } from '../constants/theme';
 
 type ButtonFailedProps = { onPressCommand?: any };
 
@@ -14,17 +15,17 @@ export function ButtonFailed({ onPressCommand }: ButtonFailedProps) {
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: '#bc141a' },
-  backgroundPressed: { backgroundColor: '#b66d6f' },
+  backgroundIdle: { backgroundColor: colors.background },
+  backgroundPressed: { backgroundColor: colors.secondary },
   button: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: 80,
-    borderWidth: 2,
-    borderColor: 'black',
+    borderWidth: 3,
+    borderColor: colors.primary,
     borderRadius: 20,
   },
-  text: { fontSize: 40, color: 'white' },
+  text: { fontSize: 40, color: colors.primary },
 });

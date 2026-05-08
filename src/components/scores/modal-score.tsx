@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../constants/theme';
 import { Player } from '../player/player';
 import { ModalDeletePlayer } from './delete-player/modal-delete-player';
 import { scoreService } from './scores.service';
@@ -42,6 +43,7 @@ export function ModalScore({ isVisible, playerScores, currentlyPlaying, onCloseM
         <Text
           key={'name-' + playerName}
           style={[styles.playerName, isCurrentlyPlaying ? styles.currentlyPlaying : styles.notPlaying]}
+          numberOfLines={1}
         >
           {playerName}
         </Text>
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
@@ -133,19 +135,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 40,
     height: 40,
-    borderWidth: 2,
-    borderColor: 'black',
+    borderWidth: 3,
+    borderColor: colors.primary,
     borderRadius: 10,
   },
-  btnDeletePressed: { backgroundColor: '#d2d2d2' },
-  btnDeleteText: { fontSize: 30 },
+  btnDeletePressed: { backgroundColor: colors.secondary },
+  btnDeleteText: { fontSize: 30, color: colors.primary },
   playerName: { width: '40%', fontSize: 30 },
   score: { width: '30%', fontSize: 30 },
   misses: { width: '10%', fontSize: 30 },
-  notPlaying: { color: 'black' },
-  currentlyPlaying: { color: '#ab8514' },
-  buttonValidate: { backgroundColor: '#2196F3' },
-  buttonValidatePressed: { backgroundColor: '#6fbaf7' },
-  button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5, width: 100 },
-  textBtn: { color: 'white', fontWeight: 'bold', textAlign: 'center', fontSize: 20 },
+  notPlaying: { color: colors.primary },
+  currentlyPlaying: { color: colors.primary },
+  buttonValidate: { backgroundColor: colors.background },
+  buttonValidatePressed: { backgroundColor: colors.secondary },
+  button: {
+    padding: 10,
+    elevation: 2,
+    margin: 5,
+    width: 100,
+    borderColor: colors.primary,
+    borderWidth: 3,
+    borderRadius: 20,
+  },
+  textBtn: { color: colors.primary, fontWeight: 'bold', textAlign: 'center', fontSize: 20 },
 });

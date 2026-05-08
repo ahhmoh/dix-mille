@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
+import { colors } from '../../constants/theme';
 
 type ButtonMultiplicatorProps = { multiplicator: number; onPressCommand?: any };
 
@@ -14,17 +15,17 @@ export function ButtonMultiplicator({ multiplicator, onPressCommand }: ButtonMul
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: 'white' },
-  backgroundPressed: { backgroundColor: 'rgb(210, 230, 255)' },
+  backgroundIdle: { backgroundColor: colors.background },
+  backgroundPressed: { backgroundColor: colors.secondary },
   btnMultiplicator: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
     height: 80,
-    borderWidth: 2,
-    borderColor: 'black',
+    borderWidth: 3,
+    borderColor: colors.primary,
     borderRadius: 20,
   },
-  text: { fontSize: 40 },
+  text: { fontSize: 40, color: colors.primary },
 });

@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
+import { colors } from '../../constants/theme';
 
 type ButtonRollbackProps = { onPressCommand?: any };
 
@@ -13,24 +14,24 @@ export function ButtonRollback({ onPressCommand }: ButtonRollbackProps) {
       <Ionicons
         name='arrow-undo'
         size={40}
-        color='black'
+        color={colors.primary}
       />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: 'white' },
-  backgroundPressed: { backgroundColor: 'rgb(210, 230, 255)' },
+  backgroundIdle: { backgroundColor: colors.background },
+  backgroundPressed: { backgroundColor: colors.secondary },
   btnMultiplicator: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
     height: 80,
-    borderWidth: 2,
-    borderColor: 'black',
+    borderWidth: 3,
+    borderColor: colors.primary,
     borderRadius: 20,
   },
-  text: { fontSize: 40 },
+  text: { fontSize: 40, color: colors.primary },
 });

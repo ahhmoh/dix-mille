@@ -5,7 +5,7 @@ import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
-import { Spacing } from '@/constants/theme';
+import { colors, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ButtonBankScore } from '../components/btn-bank-score';
@@ -294,7 +294,7 @@ export default function PlayPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', flexDirection: 'row' },
+  container: { flex: 1, justifyContent: 'center', flexDirection: 'row', backgroundColor: colors.background },
   safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
   topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
   previewZone: { flex: 1 },

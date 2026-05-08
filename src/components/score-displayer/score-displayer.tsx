@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../constants/theme';
 
 type ScoreDisplayerProps = { score?: number };
 
@@ -13,5 +14,5 @@ export function ScoreDisplayer({ score }: ScoreDisplayerProps) {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  score: { fontSize: 60 },
+  score: { fontSize: 60, color: colors.primary },
 });

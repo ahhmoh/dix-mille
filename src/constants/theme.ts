@@ -63,3 +63,15 @@ export const Spacing = {
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;
+
+// export const colors = {
+//   primary: "#200D2D",
+//   secondary: "#BB96E4",
+//   background: "#FFD066",
+// }
+
+export const colors = {
+  primary: "#480C26",
+  secondary: "#B5BEDD",
+  background: "#FFEDD5",
+}

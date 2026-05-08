@@ -1,4 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../constants/theme';
 
 interface ModalResetGameProps {
   visible: boolean;
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.secondary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -66,10 +67,10 @@ const styles = StyleSheet.create({
   },
   buttonColumn: { flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch' },
   button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5 },
-  buttonCancel: { backgroundColor: '#e01422' },
-  buttonCancelPressed: { backgroundColor: '#e07980' },
-  buttonValidate: { backgroundColor: '#2196F3' },
-  buttonValidatePressed: { backgroundColor: '#69b5f4' },
+  buttonCancel: { backgroundColor: colors.secondary },
+  buttonCancelPressed: { backgroundColor: colors.primary },
+  buttonValidate: { backgroundColor: colors.primary },
+  buttonValidatePressed: { backgroundColor: colors.secondary },
   btnTextStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
   modalText: { marginBottom: 15, textAlign: 'center', fontSize: 25 },
 });

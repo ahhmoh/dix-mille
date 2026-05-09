@@ -14,8 +14,8 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           <TabTrigger
-            name='play-page'
-            href='/play-page'
+            name='index'
+            href='/'
             asChild
           ></TabTrigger>
         </CustomTabList>

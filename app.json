@@ -17,7 +17,12 @@
       },
       "predictiveBackGestureEnabled": false
     },
-    "web": { "output": "static", "favicon": "./assets/images/favicon.png" },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "manifest": "./public/manifest.json",
+      "appleIcon": "./assets/images/icon.png"
+    },
     "plugins": [
       "expo-router",
       [

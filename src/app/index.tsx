@@ -6,7 +6,6 @@ import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { colors, Spacing } from '@/constants/theme';
-import { Image } from 'expo-image';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ButtonBankScore } from '../components/btn-bank-score';
@@ -214,12 +213,6 @@ export default function PlayPage() {
             playerNames={playerList.map((p) => p.name)}
           />
 
-          <Image
-            style={styles.image}
-            source={require('@/assets/images/expo-logo.png')}
-            tintColor={colors.primary}
-          />
-
           <ButtonResetGame
             onResetCompletely={onResetGameCompletely}
             onResetKeepingPlayers={onResetGameKeepingPlayers}
@@ -308,10 +301,4 @@ const styles = StyleSheet.create({
   tentativeScoreZone: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   btnZone: { flex: 3, justifyContent: 'center', paddingRight: 70, paddingLeft: 70, paddingBottom: 20 },
   btnRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 },
-  image: {
-    width: 100,
-    height: 100,
-    // backgroundColor: '#0553',
-    // color: "red"
-  },
 });

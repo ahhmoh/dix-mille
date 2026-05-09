@@ -92,7 +92,7 @@ export const ModalAddPlayer = ({ visible, playerNames, onValidateModal, onCloseM
             onChangeText={onPlayerNameChange}
             value={newPlayer}
             placeholder={placeholder}
-            keyboardType='numeric'
+            keyboardType='default'
             style={styles.inputText}
           />
           <View style={styles.buttonRow}>

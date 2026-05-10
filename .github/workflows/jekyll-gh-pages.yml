@@ -42,7 +42,7 @@ jobs:
       - name: list files in dir
         run: ls
       - name: list files in dist
-        run: ls ./dist
+        run: tree ./dist
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
@@ -62,3 +62,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+      - name: list files
+        run: tree _site

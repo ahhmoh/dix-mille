@@ -44,10 +44,7 @@ jobs:
       - name: list files in dist
         run: tree ./dist
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./dist
-          destination: ./_site
+        run: jekyll build --source ./dist --destination ./_site --config ./jekyll-build-config.yml
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

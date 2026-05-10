@@ -4,7 +4,7 @@
     "slug": "dix-mille",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/favicon.png",
     "scheme": "dixmille",
     "userInterfaceStyle": "automatic",
     "ios": { "icon": "./assets/expo.icon", "bundleIdentifier": "com.aahmoh.dix-mille" },

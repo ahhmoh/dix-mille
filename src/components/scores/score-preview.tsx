@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
   },
   previewZone: { flex: 6, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-  previewText: { fontSize: 30 },
+  previewText: { fontSize: 30, color: colors.primary },
   name: { flex: 5, textAlign: 'center' },
   score: { flex: 3, textAlign: 'right' },
   misses: { flex: 1, textAlign: 'center' },

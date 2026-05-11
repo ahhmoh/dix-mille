@@ -9,7 +9,7 @@ export function ButtonFailed({ onPressCommand }: ButtonFailedProps) {
       onPress={onPressCommand}
       style={({ pressed }) => [styles.button, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
     >
-      <Text style={styles.text}>Failed</Text>
+      <Text style={styles.text}>raté :)</Text>
     </Pressable>
   );
 }

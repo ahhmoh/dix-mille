@@ -42,7 +42,7 @@ describe('TurnService', () => {
 
       const nextPlayer = service.getNextPlayer(players, currentPlayer);
 
-      expect(nextPlayer.name).toBe('and');
+      expect(nextPlayer?.name).toBe('and');
     });
 
     it('should retrieve next player even after a full turn', () => {
@@ -54,7 +54,18 @@ describe('TurnService', () => {
 
       const nextPlayer = service.getNextPlayer(players, currentPlayer);
 
-      expect(nextPlayer.name).toBe('and');
+      expect(nextPlayer?.name).toBe('and');
+    });
+
+    it('should retrieve undefined if current player does not exist', () => {
+      const players: Player[] = [
+        { name: 'and', scores: [], turnCount: 0 },
+        { name: "abo", scores: [], turnCount: 0 },
+      ];
+
+      const nextPlayer = service.getNextPlayer(players, undefined);
+
+      expect(nextPlayer).toBeUndefined();
     });
   });
 
@@ -93,6 +104,17 @@ describe('TurnService', () => {
       const previousPlayer = service.getPreviousPlayer(players, currentPlayer);
 
       expect(previousPlayer).toBeUndefined();
+    });
+
+    it('should retrieve undefined if current player does not exist', () => {
+      const players: Player[] = [
+        { name: 'and', scores: [], turnCount: 0 },
+        { name: "abo", scores: [], turnCount: 0 },
+      ];
+
+      const nextPlayer = service.getPreviousPlayer(players, undefined);
+
+      expect(nextPlayer).toBeUndefined();
     });
   });
 

@@ -24,15 +24,18 @@ import { ModalScore } from '../components/scores/modal-score';
 import { ScorePreview } from '../components/scores/score-preview';
 
 export default function PlayPage() {
-  const multiplicatorBaseValue = 1;
+  const multiplicatorBaseValue = 3;
 
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
+  const [isMultiplicatorActive, setIsMultiplicatorActive] = useState(false);
   const [scoresAdded, setScoresAdded] = useState<number[]>([]);
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
   const [isScoreModalVisible, setIsScoreModalVisible] = useState(false);
+
+  const commandHistory = new CommandHistory();
 
   const onScorePreviewClick = () => {
     setIsScoreModalVisible(true);
@@ -55,11 +58,18 @@ export default function PlayPage() {
     setPlayerList([...listWithoutPlayer]);
   };
 
-  const commandHistory = new CommandHistory();
+  const resetForNewTurn = () => {
+    setScoreTentative(0);
+    setMultiplicator(multiplicatorBaseValue);
+    setIsMultiplicatorActive(false);
+    setScoresAdded([]);
+  };
 
   const onMultiplicatorPressed = () => {
     if (!currentPlayer) {
       return;
+    } else if (!isMultiplicatorActive) {
+      setIsMultiplicatorActive(true);
     } else if (multiplicator < 6) {
       setMultiplicator(multiplicator + 1);
     }
@@ -70,12 +80,11 @@ export default function PlayPage() {
       return;
     }
 
-    const atLeast3Dice = multiplicator >= 3;
     let toAdd: number = 0;
 
-    if (atLeast3Dice) {
+    if (isMultiplicatorActive) {
       toAdd = die.valueThreeTimes;
-      const multiplicatorPower = multiplicator - 3;
+      const multiplicatorPower = multiplicator - multiplicatorBaseValue;
       toAdd = toAdd * Math.pow(2, multiplicatorPower);
     } else {
       toAdd = die.valueBase;
@@ -85,6 +94,7 @@ export default function PlayPage() {
       setScoresAdded([...scoresAdded, toAdd]);
       setScoreTentative(scoreTentative + toAdd);
       setMultiplicator(multiplicatorBaseValue);
+      setIsMultiplicatorActive(false);
     }
   };
 
@@ -94,9 +104,11 @@ export default function PlayPage() {
     }
 
     const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
+
     if (multiplicator === multiplicatorBaseValue && scoresAdded.length === 0 && previousPlayer) {
       setIsRollbackModalVisible(true);
-    } else if (multiplicator > multiplicatorBaseValue) {
+    } else if (isMultiplicatorActive) {
+      setIsMultiplicatorActive(false);
       setMultiplicator(multiplicatorBaseValue);
     } else if (scoresAdded.length !== 0) {
       const toRemove = scoresAdded[scoresAdded.length - 1];
@@ -130,8 +142,8 @@ export default function PlayPage() {
 
     setPlayerList([...playerList]);
     setCurrentPlayer(previousPlayer);
-    setMultiplicator(multiplicatorBaseValue);
-    setScoreTentative(0);
+
+    resetForNewTurn();
   };
 
   const onBtnValidatePressed = () => {
@@ -142,10 +154,9 @@ export default function PlayPage() {
     const command = new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
     command.execute();
     commandHistory.push(command);
-
     setPlayerList([...playerList]);
-    setScoreTentative(0);
-    setScoresAdded([]);
+
+    resetForNewTurn();
     passTurnToNextPlayer();
   };
 
@@ -157,10 +168,9 @@ export default function PlayPage() {
     const command = new AddMissCommand(currentPlayer, scoreService, turnService);
     command.execute();
     commandHistory.push(command);
-
     setPlayerList([...playerList]);
-    setScoreTentative(0);
-    setScoresAdded([]);
+
+    resetForNewTurn();
     passTurnToNextPlayer();
   };
 
@@ -187,17 +197,18 @@ export default function PlayPage() {
   const onResetGameCompletely = () => {
     commandHistory.reset();
     setPlayerList([]);
-    setScoreTentative(0);
-    setScoresAdded([]);
     setCurrentPlayer(undefined);
+
+    resetForNewTurn();
   };
 
   const onResetGameKeepingPlayers = () => {
     commandHistory.reset();
     const players: Player[] = scoreService.resetAllPlayers(playerList);
     setPlayerList([...players]);
-    setScoreTentative(0);
-    setScoresAdded([]);
+    setCurrentPlayer(undefined);
+
+    resetForNewTurn();
 
     if (players.length != 0) {
       setCurrentPlayer({ ...players[0] });
@@ -275,6 +286,7 @@ export default function PlayPage() {
           <View style={styles.btnRow}>
             <ButtonMultiplicator
               multiplicator={multiplicator}
+              isActive={isMultiplicatorActive}
               onPressCommand={onMultiplicatorPressed}
               style={styles.btn}
             />

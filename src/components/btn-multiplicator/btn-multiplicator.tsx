@@ -1,13 +1,17 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
 import { colors } from '../../constants/theme';
 
-type ButtonMultiplicatorProps = { multiplicator: number; onPressCommand?: any };
+type ButtonMultiplicatorProps = { multiplicator: number; onPressCommand?: any; style?: StyleProp<ViewStyle> };
 
-export function ButtonMultiplicator({ multiplicator, onPressCommand }: ButtonMultiplicatorProps) {
+export function ButtonMultiplicator({ multiplicator, onPressCommand, style }: ButtonMultiplicatorProps) {
   return (
     <Pressable
       onPress={onPressCommand}
-      style={({ pressed }) => [styles.btnMultiplicator, pressed ? styles.backgroundPressed : styles.backgroundIdle]}
+      style={({ pressed }) => [
+        styles.btnMultiplicator,
+        pressed ? styles.backgroundPressed : styles.backgroundIdle,
+        style,
+      ]}
     >
       <Text style={styles.text}>x{multiplicator}</Text>
     </Pressable>
@@ -18,11 +22,9 @@ const styles = StyleSheet.create({
   backgroundIdle: { backgroundColor: colors.background },
   backgroundPressed: { backgroundColor: colors.secondary },
   btnMultiplicator: {
-    display: 'flex',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
-    height: 80,
     borderWidth: 3,
     borderColor: colors.primary,
     borderRadius: 20,

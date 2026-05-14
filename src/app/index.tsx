@@ -242,36 +242,46 @@ export default function PlayPage() {
             <ButtonScore
               die={Dice[DiceName.ONE]}
               onPressCommand={onBtnScorePressed}
+              style={styles.btn}
             />
             <ButtonScore
               die={Dice[DiceName.TWO]}
               onPressCommand={onBtnScorePressed}
+              style={styles.btn}
             />
             <ButtonScore
               die={Dice[DiceName.THREE]}
               onPressCommand={onBtnScorePressed}
+              style={styles.btn}
             />
           </View>
           <View style={styles.btnRow}>
             <ButtonScore
               die={Dice[DiceName.FOUR]}
               onPressCommand={onBtnScorePressed}
+              style={styles.btn}
             />
             <ButtonScore
               die={Dice[DiceName.FIVE]}
               onPressCommand={onBtnScorePressed}
+              style={styles.btn}
             />
             <ButtonScore
               die={Dice[DiceName.SIX]}
               onPressCommand={onBtnScorePressed}
+              style={styles.btn}
             />
           </View>
           <View style={styles.btnRow}>
             <ButtonMultiplicator
               multiplicator={multiplicator}
               onPressCommand={onMultiplicatorPressed}
+              style={styles.btn}
             />
-            <ButtonRollback onPressCommand={onBtnRollbackPressed} />
+            <ButtonRollback
+              onPressCommand={onBtnRollbackPressed}
+              style={styles.btn}
+            />
 
             {currentPlayer && (
               <ModalRollback
@@ -281,11 +291,16 @@ export default function PlayPage() {
                 onValidateModal={onRollbackModalValidate}
               />
             )}
-
-            <ButtonBankScore onPressCommand={onBtnValidatePressed} />
           </View>
           <View style={styles.btnRow}>
-            <ButtonFailed onPressCommand={onBtnFailedPressed} />
+            <ButtonFailed
+              onPressCommand={onBtnFailedPressed}
+              style={styles.btn}
+            />
+            <ButtonBankScore
+              onPressCommand={onBtnValidatePressed}
+              style={styles.btn}
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -299,6 +314,7 @@ const styles = StyleSheet.create({
   topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
   previewZone: { flex: 1 },
   tentativeScoreZone: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  btnZone: { flex: 3, justifyContent: 'center', paddingRight: 70, paddingLeft: 70, paddingBottom: 20 },
-  btnRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 },
+  btnZone: { flex: 2, justifyContent: 'center', paddingRight: 76, paddingLeft: 76, paddingBottom: 50 },
+  btnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch' },
+  btn: { margin: 2 },
 });

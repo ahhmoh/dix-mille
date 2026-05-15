@@ -24,7 +24,6 @@ import { AddScoreCommand } from '../components/scores/commands/add-score.command
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
-  const delayBeforeNewTurnMs = 2000;
 
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
@@ -34,16 +33,6 @@ export default function PlayPage() {
   const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
-  const [isScoreModalVisible, setIsScoreModalVisible] = useState(false);
-  const [isFrozen, setIsFrozen] = useState(false);
-
-  const onScorePreviewClick = () => {
-    setIsScoreModalVisible(true);
-  };
-
-  const onScoreModalClose = () => {
-    setIsScoreModalVisible(false);
-  };
 
   const onDeleteUser = (player: Player) => {
     if (currentPlayer?.name === player.name) {
@@ -66,7 +55,7 @@ export default function PlayPage() {
   };
 
   const onMultiplicatorPressed = () => {
-    if (isFrozen || !currentPlayer) {
+    if (!currentPlayer) {
       return;
     } else if (!isMultiplicatorActive) {
       setIsMultiplicatorActive(true);
@@ -76,7 +65,7 @@ export default function PlayPage() {
   };
 
   const onBtnScorePressed = (die: Die) => {
-    if (isFrozen || !currentPlayer) {
+    if (!currentPlayer) {
       return;
     }
 
@@ -99,7 +88,7 @@ export default function PlayPage() {
   };
 
   const onBtnRollbackPressed = () => {
-    if (isFrozen || !currentPlayer) {
+    if (!currentPlayer) {
       return;
     }
 
@@ -163,7 +152,7 @@ export default function PlayPage() {
   };
 
   const onBtnValidatePressed = () => {
-    if (isFrozen || scoreTentative === 0 || !currentPlayer) {
+    if (scoreTentative === 0 || !currentPlayer) {
       return;
     }
 
@@ -178,7 +167,7 @@ export default function PlayPage() {
   };
 
   const onBtnFailedPressed = () => {
-    if (isFrozen || !currentPlayer) {
+    if (!currentPlayer) {
       return;
     }
 

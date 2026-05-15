@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
 import { Command } from '@/components/scores/commands/command';
+import { ListScores } from '@/components/scores/list-scores';
 import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
@@ -21,8 +22,6 @@ import { ButtonScore } from '../components/score-buttons/button-score';
 import { ScoreDisplayer } from '../components/score-displayer/score-displayer';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
-import { ModalScore } from '../components/scores/modal-score';
-import { ScorePreview } from '../components/scores/score-preview';
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
@@ -258,15 +257,9 @@ export default function PlayPage() {
         </View>
 
         <View style={styles.previewZone}>
-          <ScorePreview
+          <ListScores
+            players={playerList}
             currentlyPlaying={currentPlayer}
-            onClick={onScorePreviewClick}
-          />
-          <ModalScore
-            isVisible={isScoreModalVisible}
-            playerScores={playerList}
-            currentlyPlaying={currentPlayer}
-            onCloseModal={onScoreModalClose}
             onDeleteUser={onDeleteUser}
           />
         </View>
@@ -350,10 +343,10 @@ export default function PlayPage() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', flexDirection: 'row', backgroundColor: colors.background },
   safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
-  topBtnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
+  topBtnRow: { flex: 0.4, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
   previewZone: { flex: 1 },
-  tentativeScoreZone: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  btnZone: { flex: 2, justifyContent: 'center', paddingRight: 76, paddingLeft: 76, paddingBottom: 50 },
+  tentativeScoreZone: { flex: 0.5, justifyContent: 'center', alignItems: 'center' },
+  btnZone: { flex: 1, justifyContent: 'center', paddingRight: 76, paddingLeft: 76, paddingBottom: 50 },
   btnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch' },
   btn: { margin: 2 },
 });

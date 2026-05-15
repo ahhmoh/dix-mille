@@ -1,3 +1,4 @@
+import { colors } from '@/constants/theme';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface ModalRollbackProps {
@@ -20,13 +21,13 @@ export const ModalRollback = ({ visible, lastPlayerName, onValidateModal, onClos
 
           <View style={styles.buttonRow}>
             <Pressable
-              style={[styles.button, styles.buttonClose]}
+              style={({ pressed }) => [styles.button, pressed ? styles.buttonClosePressed : styles.buttonClose]}
               onPress={onCloseModal}
             >
               <Text style={styles.textStyle}>Non</Text>
             </Pressable>
             <Pressable
-              style={[styles.button, styles.buttonValidate]}
+              style={({ pressed }) => [styles.button, pressed ? styles.buttonValidatePressed : styles.buttonValidate]}
               onPress={onValidateModal}
             >
               <Text style={styles.textStyle}>Oui</Text>
@@ -42,12 +43,12 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -55,8 +56,10 @@ const styles = StyleSheet.create({
   },
   buttonRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   button: { width: 60, borderRadius: 20, padding: 10, margin: 5 },
-  buttonClose: { backgroundColor: '#e01422' },
-  buttonValidate: { backgroundColor: '#2196F3' },
+  buttonClose: { backgroundColor: colors.secondary },
+  buttonClosePressed: { backgroundColor: colors.primary },
+  buttonValidate: { backgroundColor: colors.primary },
+  buttonValidatePressed: { backgroundColor: colors.secondary },
   textStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
   modalText: { marginBottom: 15, textAlign: 'center' },
 });

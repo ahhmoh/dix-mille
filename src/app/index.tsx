@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
+import { Command } from '@/components/scores/commands/command';
 import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
@@ -20,7 +21,6 @@ import { ButtonScore } from '../components/score-buttons/button-score';
 import { ScoreDisplayer } from '../components/score-displayer/score-displayer';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
-import { CommandHistory } from '../components/scores/commands/command-history';
 import { ModalScore } from '../components/scores/modal-score';
 import { ScorePreview } from '../components/scores/score-preview';
 
@@ -32,13 +32,12 @@ export default function PlayPage() {
   const [scoreTentative, setScoreTentative] = useState(0);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
   const [isMultiplicatorActive, setIsMultiplicatorActive] = useState(false);
-  const [scoresAdded, setScoresAdded] = useState<number[]>([]);
+  const [scoresAddedForTurn, setScoresAddedForTurn] = useState<number[]>([]);
+  const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
   const [isScoreModalVisible, setIsScoreModalVisible] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
-
-  const commandHistory = new CommandHistory();
 
   const onScorePreviewClick = () => {
     setIsScoreModalVisible(true);
@@ -65,7 +64,7 @@ export default function PlayPage() {
     setScoreTentative(0);
     setMultiplicator(multiplicatorBaseValue);
     setIsMultiplicatorActive(false);
-    setScoresAdded([]);
+    setScoresAddedForTurn([]);
   };
 
   const onMultiplicatorPressed = () => {
@@ -94,7 +93,7 @@ export default function PlayPage() {
     }
 
     if ((toAdd += 0)) {
-      setScoresAdded([...scoresAdded, toAdd]);
+      setScoresAddedForTurn([...scoresAddedForTurn, toAdd]);
       setScoreTentative(scoreTentative + toAdd);
       setMultiplicator(multiplicatorBaseValue);
       setIsMultiplicatorActive(false);
@@ -108,15 +107,15 @@ export default function PlayPage() {
 
     const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
 
-    if (multiplicator === multiplicatorBaseValue && scoresAdded.length === 0 && previousPlayer) {
+    if (multiplicator === multiplicatorBaseValue && scoresAddedForTurn.length === 0 && previousPlayer) {
       setIsRollbackModalVisible(true);
     } else if (isMultiplicatorActive) {
       setIsMultiplicatorActive(false);
       setMultiplicator(multiplicatorBaseValue);
-    } else if (scoresAdded.length !== 0) {
-      const toRemove = scoresAdded[scoresAdded.length - 1];
+    } else if (scoresAddedForTurn.length !== 0) {
+      const toRemove = scoresAddedForTurn[scoresAddedForTurn.length - 1];
 
-      setScoresAdded(scoresAdded.slice(0, scoresAdded.length - 1));
+      setScoresAddedForTurn(scoresAddedForTurn.slice(0, scoresAddedForTurn.length - 1));
       setScoreTentative(scoreTentative - toRemove);
     }
   };
@@ -137,16 +136,32 @@ export default function PlayPage() {
       return;
     }
 
-    const command = commandHistory.pop();
+    const command = scoreModificationCommands.pop();
+    setScoreModificationCommands([...scoreModificationCommands]);
+
     if (!command) {
       return;
     }
     command.undo();
 
-    setPlayerList([...playerList]);
+    keepPlayerListUpdated(previousPlayer);
     setCurrentPlayer(previousPlayer);
 
     resetForNewTurn();
+  };
+
+  const keepPlayerListUpdated = (player: Player) => {
+    if (!player) {
+      return;
+    }
+
+    const indexPlayer = playerList.findIndex((p) => p.name === player.name);
+    if (indexPlayer === -1) {
+      return;
+    }
+
+    playerList[indexPlayer] = player;
+    setPlayerList([...playerList]);
   };
 
   const onBtnValidatePressed = () => {
@@ -156,9 +171,9 @@ export default function PlayPage() {
 
     const command = new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
     command.execute();
-    commandHistory.push(command);
+    setScoreModificationCommands([...scoreModificationCommands, command]);
     setCurrentPlayer({ ...currentPlayer });
-    setPlayerList([...playerList]);
+    keepPlayerListUpdated(currentPlayer);
 
     resetForNewTurn();
     passTurnToNextPlayer();
@@ -171,9 +186,9 @@ export default function PlayPage() {
 
     const command = new AddMissCommand(currentPlayer, scoreService, turnService);
     command.execute();
-    commandHistory.push(command);
+    setScoreModificationCommands([...scoreModificationCommands, command]);
     setCurrentPlayer({ ...currentPlayer });
-    setPlayerList([...playerList]);
+    keepPlayerListUpdated(currentPlayer);
 
     resetForNewTurn();
     passTurnToNextPlayer();
@@ -207,7 +222,7 @@ export default function PlayPage() {
   };
 
   const onResetGameCompletely = () => {
-    commandHistory.reset();
+    setScoreModificationCommands([]);
     setPlayerList([]);
     setCurrentPlayer(undefined);
 
@@ -215,7 +230,7 @@ export default function PlayPage() {
   };
 
   const onResetGameKeepingPlayers = () => {
-    commandHistory.reset();
+    setScoreModificationCommands([]);
     const players: Player[] = scoreService.resetAllPlayers(playerList);
     setPlayerList([...players]);
     setCurrentPlayer(undefined);

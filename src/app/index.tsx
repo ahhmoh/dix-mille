@@ -8,7 +8,7 @@ import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { colors, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { delay, of, take } from 'rxjs';
+import { delay, of, take, tap } from 'rxjs';
 import { ButtonBankScore } from '../components/btn-bank-score';
 import { ButtonFailed } from '../components/btn-failed';
 import { ButtonMultiplicator } from '../components/btn-multiplicator/btn-multiplicator';
@@ -69,7 +69,7 @@ export default function PlayPage() {
   };
 
   const onMultiplicatorPressed = () => {
-    if (!currentPlayer) {
+    if (isFrozen || !currentPlayer) {
       return;
     } else if (!isMultiplicatorActive) {
       setIsMultiplicatorActive(true);
@@ -79,7 +79,7 @@ export default function PlayPage() {
   };
 
   const onBtnScorePressed = (die: Die) => {
-    if (!currentPlayer) {
+    if (isFrozen || !currentPlayer) {
       return;
     }
 
@@ -102,7 +102,7 @@ export default function PlayPage() {
   };
 
   const onBtnRollbackPressed = () => {
-    if (!currentPlayer) {
+    if (isFrozen || !currentPlayer) {
       return;
     }
 
@@ -150,7 +150,7 @@ export default function PlayPage() {
   };
 
   const onBtnValidatePressed = () => {
-    if (scoreTentative === 0 || !currentPlayer) {
+    if (isFrozen || scoreTentative === 0 || !currentPlayer) {
       return;
     }
 
@@ -165,7 +165,7 @@ export default function PlayPage() {
   };
 
   const onBtnFailedPressed = () => {
-    if (!currentPlayer) {
+    if (isFrozen || !currentPlayer) {
       return;
     }
 
@@ -187,7 +187,12 @@ export default function PlayPage() {
     const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer);
     if (nextPlayer) {
       of(void 0)
-        .pipe(delay(delayBeforeNewTurnMs), take(1))
+        .pipe(
+          tap(() => setIsFrozen(true)),
+          delay(delayBeforeNewTurnMs),
+          tap(() => setIsFrozen(false)),
+          take(1)
+        )
         .subscribe(() => setCurrentPlayer({ ...nextPlayer }));
     }
   };

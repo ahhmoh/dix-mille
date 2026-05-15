@@ -8,6 +8,7 @@ import { Dice, DiceName, Die } from '@/constants/dice-values';
 import { colors, Spacing } from '@/constants/theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { delay, of, take } from 'rxjs';
 import { ButtonBankScore } from '../components/btn-bank-score';
 import { ButtonFailed } from '../components/btn-failed';
 import { ButtonMultiplicator } from '../components/btn-multiplicator/btn-multiplicator';
@@ -25,6 +26,7 @@ import { ScorePreview } from '../components/scores/score-preview';
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
+  const delayBeforeNewTurnMs = 2000;
 
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
@@ -34,6 +36,7 @@ export default function PlayPage() {
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
   const [isScoreModalVisible, setIsScoreModalVisible] = useState(false);
+  const [isFrozen, setIsFrozen] = useState(false);
 
   const commandHistory = new CommandHistory();
 
@@ -154,6 +157,7 @@ export default function PlayPage() {
     const command = new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
     command.execute();
     commandHistory.push(command);
+    setCurrentPlayer({ ...currentPlayer });
     setPlayerList([...playerList]);
 
     resetForNewTurn();
@@ -168,6 +172,7 @@ export default function PlayPage() {
     const command = new AddMissCommand(currentPlayer, scoreService, turnService);
     command.execute();
     commandHistory.push(command);
+    setCurrentPlayer({ ...currentPlayer });
     setPlayerList([...playerList]);
 
     resetForNewTurn();
@@ -181,7 +186,9 @@ export default function PlayPage() {
 
     const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer);
     if (nextPlayer) {
-      setCurrentPlayer({ ...nextPlayer });
+      of(void 0)
+        .pipe(delay(delayBeforeNewTurnMs), take(1))
+        .subscribe(() => setCurrentPlayer({ ...nextPlayer }));
     }
   };
 

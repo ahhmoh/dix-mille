@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../constants/theme';
 import { Player } from '../player/player';
 import { ModalDeletePlayer } from './delete-player/modal-delete-player';
@@ -27,12 +27,28 @@ export function ListScores({ players, currentlyPlaying, onDeleteUser }: ListScor
     setPlayerToDelete(undefined);
   };
 
+  const dangerAnimationValue = new Animated.Value(0);
+  const dangerColor = dangerAnimationValue.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [colors.primary, 'red', colors.primary],
+  });
+  let animation = Animated.loop(
+    Animated.timing(dangerAnimationValue, { toValue: 1, duration: 1300, useNativeDriver: false })
+  );
+
+  if (players.find((p) => scoreService.getLastValidScore(p)?.misses === 2)) {
+    animation.start();
+  } else {
+    animation?.stop();
+    dangerAnimationValue.setValue(0);
+  }
+
   const renderScore = ({ item }: { item: Player }) => {
     const playerName = item?.name ?? '';
     const lastScore = scoreService.getLastValidScore(item);
     const scoreValue = lastScore?.value || 0;
     const misses = lastScore?.misses || 0;
-    const isCurrentlyPlaying = item.name === currentlyPlaying?.name;
+    const dangerStyle = item.name === currentlyPlaying?.name && lastScore?.misses === 2 && { color: dangerColor };
 
     return (
       <View style={styles.rowPlayer}>
@@ -42,25 +58,25 @@ export function ListScores({ players, currentlyPlaying, onDeleteUser }: ListScor
           size={30}
           style={[styles.iconCurrentlyPlaying, item.name !== currentlyPlaying?.name && styles.iconHidden]}
         />
-        <Text
+        <Animated.Text
           key={'name-' + playerName}
-          style={[styles.playerName, isCurrentlyPlaying ? styles.currentlyPlaying : styles.notPlaying]}
+          style={[styles.playerInformation, styles.playerName, dangerStyle]}
           numberOfLines={1}
         >
           {playerName}
-        </Text>
-        <Text
+        </Animated.Text>
+        <Animated.Text
           key={'score-' + playerName}
-          style={[styles.score, isCurrentlyPlaying ? styles.currentlyPlaying : styles.notPlaying]}
+          style={[styles.playerInformation, styles.score, dangerStyle]}
         >
           {scoreValue}
-        </Text>
-        <Text
+        </Animated.Text>
+        <Animated.Text
           key={'misses-' + playerName}
-          style={[styles.misses, isCurrentlyPlaying ? styles.currentlyPlaying : styles.notPlaying]}
+          style={[styles.playerInformation, styles.misses, dangerStyle]}
         >
           {'|'.repeat(misses)}
-        </Text>
+        </Animated.Text>
 
         <View style={styles.deleteSection}>
           {players.length !== 1 && (
@@ -129,12 +145,11 @@ const styles = StyleSheet.create({
   btnDeleteText: { fontSize: 25, color: colors.primary },
   iconCurrentlyPlaying: { flex: 0.4 },
   iconHidden: { visibility: 'hidden' },
+  playerInformation: { color: colors.primary },
   playerName: { flex: 2, fontSize: 25 },
   score: { flex: 1, fontSize: 25 },
   misses: { flex: 0.3, fontSize: 25 },
   deleteSection: { flex: 0.4 },
-  notPlaying: { color: colors.primary },
-  currentlyPlaying: { color: colors.primary },
 
   rowNoPlayer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   messageNoPlayer: { fontSize: 20, color: colors.primary, fontWeight: 'bold' },

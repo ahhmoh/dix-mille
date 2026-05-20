@@ -447,4 +447,256 @@ describe('ScoresService', () => {
       });
     });
   });
+
+  describe('playerAboutToWin()', () => {
+    const mockValueToWin = 1000;
+
+    describe('if there is not player about to win', () => {
+      const mockPlayerNotWinning: Player = { name: 'mock-name', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+
+      it('should return undefined', () => {
+        const playerWinning = service.playerAboutToWin([mockPlayerNotWinning], mockValueToWin);
+
+        expect(playerWinning).toBeUndefined();
+      });
+    });
+
+    describe('if a player is about to win', () => {
+      const mockPlayerNotWinning: Player = {
+        name: 'mock-name-no-winning',
+        scores: [{ value: 100, misses: 0 }],
+        turnCount: 0,
+      };
+
+      describe('with score equal to value to win', () => {
+        const mockPlayerWinning: Player = {
+          name: 'mock-name-winning',
+          scores: [{ value: mockValueToWin, misses: 0 }],
+          turnCount: 0,
+        };
+
+        it('should return player winning', () => {
+          const mockPlayers = [mockPlayerNotWinning, mockPlayerWinning];
+
+          const playerWinning = service.playerAboutToWin(mockPlayers, mockValueToWin);
+
+          expect(playerWinning).toBe(playerWinning);
+        });
+      });
+
+      describe('with score over value to win', () => {
+        const mockPlayerWinning: Player = {
+          name: 'mock-name-winning',
+          scores: [{ value: mockValueToWin + 100, misses: 0 }],
+          turnCount: 0,
+        };
+
+        it('should return player winning', () => {
+          const mockPlayers = [mockPlayerNotWinning, mockPlayerWinning];
+
+          const playerWinning = service.playerAboutToWin(mockPlayers, mockValueToWin);
+
+          expect(playerWinning).toBe(playerWinning);
+        });
+      });
+
+      describe('and another player has a score also higher than the value to win', () => {
+        const mockPlayerWithLowerScore: Player = {
+          name: 'mock-name-lower-score',
+          scores: [{ value: mockValueToWin + 100, misses: 0 }],
+          turnCount: 0,
+        };
+
+        const mockPlayerWinning: Player = {
+          name: 'mock-name-winning',
+          scores: [{ value: mockValueToWin + 200, misses: 0 }],
+          turnCount: 0,
+        };
+
+        it('should return player with higher score', () => {
+          const mockPlayers = [mockPlayerWithLowerScore, mockPlayerWinning];
+
+          const playerWinning = service.playerAboutToWin(mockPlayers, mockValueToWin);
+
+          expect(playerWinning).toBe(playerWinning);
+        });
+      });
+
+      describe('and another player reaches the same score', () => {
+        it('should return the first player if he is the first to score the win', () => {
+          const mockPlayerWinning: Player = {
+            name: 'mock-name-winning',
+            scores: [{ value: mockValueToWin, misses: 0 }],
+            turnCount: 1,
+          };
+          const mockPlayerReaching: Player = {
+            name: 'mock-name-reaching',
+            scores: [{ value: mockValueToWin, misses: 0 }],
+            turnCount: 1,
+          };
+          const mockPlayers = [mockPlayerWinning, mockPlayerReaching];
+
+          const playerWinning = service.playerAboutToWin(mockPlayers, mockValueToWin);
+
+          expect(playerWinning).toBe(playerWinning);
+        });
+
+        it('should return the second player if he is the first to score the win', () => {
+          const mockPlayerWinning: Player = {
+            name: 'mock-name-winning',
+            scores: [{ value: mockValueToWin, misses: 0 }],
+            turnCount: 1,
+          };
+          const mockPlayerReaching: Player = {
+            name: 'mock-name-reaching',
+            scores: [{ value: mockValueToWin, misses: 0 }],
+            turnCount: 2,
+          };
+          const mockPlayers = [mockPlayerReaching, mockPlayerWinning];
+
+          const playerWinning = service.playerAboutToWin(mockPlayers, mockValueToWin);
+
+          expect(playerWinning).toBe(playerWinning);
+        });
+      });
+    });
+  });
+
+  describe('getTopPlayers()', () => {
+    describe('when first player is first playing', () => {
+      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0 }],
+        turnCount: 2,
+      };
+      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+
+      it('should return the 3 best players in order', () => {
+        const mockPlayers = [mockFirstPlayer, mockSecondPlayer, mockThirdPlayer];
+
+        const result = service.getTopPlayers(mockPlayers);
+
+        expect(result.first).toBe(mockFirstPlayer);
+        expect(result.second).toBe(mockSecondPlayer);
+        expect(result.third).toBe(mockThirdPlayer);
+      });
+    });
+
+    describe('when first player is in the middle playing', () => {
+      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 3 };
+      const mockLosingPlayer: Player = {
+        name: 'mock-losing-player',
+        scores: [{ value: 200, misses: 0 }],
+        turnCount: 2,
+      };
+      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0 }],
+        turnCount: 2,
+      };
+
+      it('should return the 3 best players in order', () => {
+        const mockPlayers = [mockThirdPlayer, mockLosingPlayer, mockFirstPlayer, mockSecondPlayer];
+
+        const result = service.getTopPlayers(mockPlayers);
+
+        expect(result.first).toBe(mockFirstPlayer);
+        expect(result.second).toBe(mockSecondPlayer);
+        expect(result.third).toBe(mockThirdPlayer);
+      });
+    });
+
+    describe('when first player at the end', () => {
+      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 800, misses: 0 }], turnCount: 3 };
+      const mockLosingPlayer: Player = {
+        name: 'mock-losing-player',
+        scores: [{ value: 200, misses: 0 }],
+        turnCount: 3,
+      };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0 }],
+        turnCount: 3,
+      };
+      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+
+      it('should return the 3 best players in order', () => {
+        const mockPlayers = [mockThirdPlayer, mockLosingPlayer, mockSecondPlayer, mockFirstPlayer];
+
+        const result = service.getTopPlayers(mockPlayers);
+
+        expect(result.first).toBe(mockFirstPlayer);
+        expect(result.second).toBe(mockSecondPlayer);
+        expect(result.third).toBe(mockThirdPlayer);
+      });
+    });
+  });
+
+  describe('getTopPlayer()', () => {
+    describe('when first player is first playing', () => {
+      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0 }],
+        turnCount: 2,
+      };
+      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+
+      it('should return the 3 best players in order', () => {
+        const mockPlayers = [mockFirstPlayer, mockSecondPlayer, mockThirdPlayer];
+
+        const result = service.getTopPlayer(mockPlayers);
+
+        expect(result).toBe(mockFirstPlayer);
+      });
+    });
+
+    describe('when first player is in the middle playing', () => {
+      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 3 };
+      const mockLosingPlayer: Player = {
+        name: 'mock-losing-player',
+        scores: [{ value: 200, misses: 0 }],
+        turnCount: 2,
+      };
+      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0 }],
+        turnCount: 2,
+      };
+
+      it('should return the 3 best players in order', () => {
+        const mockPlayers = [mockThirdPlayer, mockLosingPlayer, mockFirstPlayer, mockSecondPlayer];
+
+        const result = service.getTopPlayer(mockPlayers);
+
+        expect(result).toBe(mockFirstPlayer);
+      });
+    });
+
+    describe('when first player at the end', () => {
+      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 800, misses: 0 }], turnCount: 3 };
+      const mockLosingPlayer: Player = {
+        name: 'mock-losing-player',
+        scores: [{ value: 200, misses: 0 }],
+        turnCount: 3,
+      };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0 }],
+        turnCount: 3,
+      };
+      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+
+      it('should return the 3 best players in order', () => {
+        const mockPlayers = [mockThirdPlayer, mockLosingPlayer, mockSecondPlayer, mockFirstPlayer];
+
+        const result = service.getTopPlayer(mockPlayers);
+
+        expect(result).toBe(mockFirstPlayer);
+      });
+    });
+  });
 });

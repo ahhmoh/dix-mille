@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
+import { ModalEndOfGame } from '@/components/end-of-game/modal-end-of-game';
 import { Command } from '@/components/scores/commands/command';
 import { ListScores } from '@/components/scores/list-scores';
 import { scoreService } from '@/components/scores/scores.service';
@@ -24,6 +25,7 @@ import { AddScoreCommand } from '../components/scores/commands/add-score.command
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
+  const valueToWin = 100;
 
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
@@ -33,6 +35,7 @@ export default function PlayPage() {
   const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
+  const [isEndOfGameModalVisible, setIsEndOfGameModalVisible] = useState(false);
 
   const onDeleteUser = (player: Player) => {
     if (currentPlayer?.name === player.name) {
@@ -87,6 +90,7 @@ export default function PlayPage() {
     }
   };
 
+  //#region rollback
   const onBtnRollbackPressed = () => {
     if (!currentPlayer) {
       return;
@@ -136,19 +140,22 @@ export default function PlayPage() {
 
     resetForNewTurn();
   };
+  //#endregion
 
-  const keepPlayerListUpdated = (player: Player) => {
+  const keepPlayerListUpdated = (player: Player): Player[] => {
     if (!player) {
-      return;
+      return playerList;
     }
 
     const indexPlayer = playerList.findIndex((p) => p.name === player.name);
     if (indexPlayer === -1) {
-      return;
+      return playerList;
     }
 
     playerList[indexPlayer] = player;
+    const updatedList = [...playerList];
     setPlayerList([...playerList]);
+    return updatedList;
   };
 
   const onBtnValidatePressed = () => {
@@ -160,10 +167,10 @@ export default function PlayPage() {
     command.execute();
     setScoreModificationCommands([...scoreModificationCommands, command]);
     setCurrentPlayer({ ...currentPlayer });
-    keepPlayerListUpdated(currentPlayer);
+    const playerListUpdated = keepPlayerListUpdated(currentPlayer);
 
     resetForNewTurn();
-    passTurnToNextPlayer();
+    passTurnToNextPlayer(playerListUpdated);
   };
 
   const onBtnFailedPressed = () => {
@@ -175,19 +182,23 @@ export default function PlayPage() {
     command.execute();
     setScoreModificationCommands([...scoreModificationCommands, command]);
     setCurrentPlayer({ ...currentPlayer });
-    keepPlayerListUpdated(currentPlayer);
+    const playerListUpdated = keepPlayerListUpdated(currentPlayer);
 
     resetForNewTurn();
-    passTurnToNextPlayer();
+    passTurnToNextPlayer(playerListUpdated);
   };
 
-  const passTurnToNextPlayer = () => {
+  const passTurnToNextPlayer = (players: Player[]) => {
     if (!currentPlayer) {
       return;
     }
 
-    const nextPlayer = turnService.getNextPlayer(playerList, currentPlayer);
-    if (nextPlayer) {
+    const nextPlayer = turnService.getNextPlayer(players, currentPlayer);
+    if (!nextPlayer) {
+      return;
+    } else if (nextPlayer.name === scoreService.playerAboutToWin(playerList, valueToWin)?.name) {
+      setIsEndOfGameModalVisible(true);
+    } else {
       setCurrentPlayer({ ...nextPlayer });
     }
   };
@@ -225,6 +236,11 @@ export default function PlayPage() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
+        <ModalEndOfGame
+          visible={isEndOfGameModalVisible}
+          players={playerList}
+          onCloseModal={() => setIsEndOfGameModalVisible(false)}
+        />
         <View style={styles.topBtnRow}>
           <ButtonAddPlayer
             onPlayerAdded={onAddPlayer}

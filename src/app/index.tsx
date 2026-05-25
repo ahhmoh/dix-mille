@@ -2,6 +2,10 @@ import { StyleSheet, View } from 'react-native';
 
 import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
 import { ModalEndOfGame } from '@/components/end-of-game/modal-end-of-game';
+import { ButtonHistory } from '@/components/history/btn-history';
+import { historyMapperService } from '@/components/history/history-mapper.service';
+import { ModalHistory } from '@/components/history/modal-history';
+import { ButtonResetGame } from '@/components/reset-game/btn-reset-game';
 import { Command } from '@/components/scores/commands/command';
 import { ListScores } from '@/components/scores/list-scores';
 import { scoreService } from '@/components/scores/scores.service';
@@ -15,7 +19,6 @@ import { ButtonBankScore } from '../components/btn-bank-score';
 import { ButtonFailed } from '../components/btn-failed';
 import { ButtonMultiplicator } from '../components/btn-multiplicator/btn-multiplicator';
 import { Player } from '../components/player/player';
-import { ButtonResetGame } from '../components/reset-game/btn-reset-game';
 import { ButtonRollback } from '../components/rollback/btn-rollback';
 import { ModalRollback } from '../components/rollback/modal-rollback';
 import { ButtonScore } from '../components/score-buttons/button-score';
@@ -35,6 +38,7 @@ export default function PlayPage() {
   const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
   const [isEndOfGameModalVisible, setIsEndOfGameModalVisible] = useState(false);
 
   const onDeleteUser = (player: Player) => {
@@ -245,6 +249,16 @@ export default function PlayPage() {
           <ButtonAddPlayer
             onPlayerAdded={onAddPlayer}
             playerNames={playerList.map((p) => p.name)}
+          />
+
+          <ButtonHistory
+            onPressCommand={() => setIsHistoryModalVisible(true)}
+            isDisabled={playerList.length === 0}
+          />
+          <ModalHistory
+            visible={isHistoryModalVisible}
+            data={historyMapperService.extractData(playerList)}
+            onCloseModal={() => setIsHistoryModalVisible(false)}
           />
 
           <ButtonResetGame

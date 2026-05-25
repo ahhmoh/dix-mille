@@ -84,7 +84,7 @@ export class ScoreService {
   }
 
   public getLastValidScore(player: Player): Score | undefined {
-    return player.scores.toReversed().find((score) => score.misses < 3);
+    return [...player.scores].reverse().find((score) => score.misses < 3);
   }
 
   public resetAllPlayers(players: Player[]): Player[] {
@@ -139,7 +139,7 @@ export class ScoreService {
   }
 
   public getTopPlayer(players: Player[]): Player {
-    if (players.length === 0) {
+    if (!players || players.length === 0) {
       throw new Error('Player list must not be empty');
     }
 
@@ -148,7 +148,7 @@ export class ScoreService {
   }
 
   private sortPlayersByBestPerformance(players: Player[]): Player[] {
-    return players.toSorted((p1, p2) => {
+    return [...players].sort((p1, p2) => {
       const lastP1Score = this.getLastValidScore(p1)?.value ?? 0;
       const lastP2Score = this.getLastValidScore(p2)?.value ?? 0;
       return lastP2Score - lastP1Score || p1.turnCount - p2.turnCount;

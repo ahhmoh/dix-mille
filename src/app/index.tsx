@@ -25,7 +25,7 @@ import { AddScoreCommand } from '../components/scores/commands/add-score.command
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
-  const valueToWin = 100;
+  const valueToWin = 10000;
 
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);

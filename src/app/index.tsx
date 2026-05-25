@@ -6,6 +6,8 @@ import { ButtonHistory } from '@/components/history/btn-history';
 import { historyMapperService } from '@/components/history/history-mapper.service';
 import { ModalHistory } from '@/components/history/modal-history';
 import { ButtonResetGame } from '@/components/reset-game/btn-reset-game';
+import { ButtonRules } from '@/components/rules/btn-rules';
+import { ModalRules } from '@/components/rules/modal-rules';
 import { Rules } from '@/components/rules/rules';
 import { AddScoreWithScoreCancelCommand } from '@/components/scores/commands/add-score-with-score-cancel.command';
 import { Command } from '@/components/scores/commands/command';
@@ -42,6 +44,7 @@ export default function PlayPage() {
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
   const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
+  const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
   const [isEndOfGameModalVisible, setIsEndOfGameModalVisible] = useState(false);
 
   const onDeleteUser = (player: Player) => {
@@ -251,6 +254,7 @@ export default function PlayPage() {
           players={playerList}
           onCloseModal={() => setIsEndOfGameModalVisible(false)}
         />
+
         <View style={styles.topBtnRow}>
           <ButtonAddPlayer
             onPlayerAdded={onAddPlayer}
@@ -270,6 +274,14 @@ export default function PlayPage() {
           <ButtonResetGame
             onResetCompletely={onResetGameCompletely}
             onResetKeepingPlayers={onResetGameKeepingPlayers}
+          />
+
+          <ButtonRules onPressCommand={() => setIsRulesModalVisible(true)} />
+          <ModalRules
+            visible={isRulesModalVisible}
+            onCloseModal={() => setIsRulesModalVisible(false)}
+            onRulesUpdated={(updated: Rules) => setRules({ ...updated })}
+            rules={rules}
           />
         </View>
 

@@ -5,16 +5,16 @@ import { ScoreService } from '../scores.service';
 import { Command } from './command';
 
 export class AddScoreCommand implements Command {
-  private player: Player;
-  private toSave: number;
-  private scoreService: ScoreService;
-  private turnService: TurnService;
-  private scoreAdded: Score | undefined = undefined;
-  private isExecuted: boolean = false;
+  protected player: Player;
+  protected toSave: number;
+  protected scoreService: ScoreService;
+  protected turnService: TurnService;
+  protected scoreAdded: Score | undefined = undefined;
+  protected isExecuted: boolean = false;
 
   constructor(player: Player, toSave: number, scoreService: ScoreService, turnService: TurnService) {
     if (toSave <= 0) {
-      throw new Error("Score cannot be negative to be saved");
+      throw new Error('Score cannot be negative to be saved');
     }
 
     this.player = player;
@@ -23,7 +23,7 @@ export class AddScoreCommand implements Command {
     this.turnService = turnService;
   }
 
-  public execute = () => {
+  public execute() {
     if (this.isExecuted) {
       return;
     }
@@ -33,9 +33,9 @@ export class AddScoreCommand implements Command {
 
     const { scores } = this.player;
     this.scoreAdded = scores[scores.length - 1];
-  };
+  }
 
-  public undo = () => {
+  public undo() {
     if (!this.isExecuted || !this.scoreAdded) {
       return;
     }
@@ -43,5 +43,5 @@ export class AddScoreCommand implements Command {
     this.scoreService.removeScore(this.scoreAdded, this.player);
     this.turnService.removeTurnPlayed(this.player);
     this.scoreAdded = undefined;
-  };
+  }
 }

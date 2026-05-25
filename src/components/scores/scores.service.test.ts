@@ -103,9 +103,9 @@ describe('ScoresService', () => {
       const player: Player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 0 },
-          { value: 500, misses: 3 },
-          { value: 700, misses: 3 },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 500, misses: 3, isCanceled: false },
+          { value: 700, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -123,9 +123,9 @@ describe('ScoresService', () => {
       const player: Player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 0 },
-          { value: 500, misses: 3 },
-          { value: 700, misses: 3 },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 500, misses: 3, isCanceled: false },
+          { value: 700, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -151,9 +151,9 @@ describe('ScoresService', () => {
       const player: Player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 0 },
-          { value: 500, misses: 3 },
-          { value: 700, misses: 3 },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 500, misses: 3, isCanceled: false },
+          { value: 700, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -188,8 +188,8 @@ describe('ScoresService', () => {
       it('should add miss to last score', () => {
         // given
         const scores = [
-          { value: 100, misses: 0 },
-          { value: 200, misses: 0 },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 200, misses: 0, isCanceled: false },
         ];
         const player: Player = { name: 'ant', scores, turnCount: 0 };
 
@@ -205,7 +205,7 @@ describe('ScoresService', () => {
 
       it('should not add more than 3 misses to last score', () => {
         // given
-        const scores = [{ value: 100, misses: 0 }];
+        const scores = [{ value: 100, misses: 0, isCanceled: false }];
         const player: Player = { name: 'ant', scores, turnCount: 0 };
 
         //when
@@ -223,9 +223,9 @@ describe('ScoresService', () => {
     describe('with score already invalidated', () => {
       it('should add miss only to last valid score', () => {
         const scores = [
-          { value: 100, misses: 0 },
-          { value: 200, misses: 3 },
-          { value: 500, misses: 3 },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 200, misses: 3, isCanceled: false },
+          { value: 500, misses: 3, isCanceled: false },
         ];
         const player: Player = { name: 'ant', scores, turnCount: 0 };
 
@@ -253,9 +253,9 @@ describe('ScoresService', () => {
       const player: Player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 3 },
-          { value: 200, misses: 3 },
-          { value: 500, misses: 3 },
+          { value: 100, misses: 3, isCanceled: false },
+          { value: 200, misses: 3, isCanceled: false },
+          { value: 500, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -273,7 +273,7 @@ describe('ScoresService', () => {
 
   describe('removeMissFromScore', () => {
     it('should remove miss from score', () => {
-      const score: Score = { value: 100, misses: 2 };
+      const score: Score = { value: 100, misses: 2, isCanceled: false };
 
       scoreService.removeMissFromScore(score);
 
@@ -281,7 +281,7 @@ describe('ScoresService', () => {
     });
 
     it('should not change miss value to negative', () => {
-      const score: Score = { value: 100, misses: 0 };
+      const score: Score = { value: 100, misses: 0, isCanceled: false };
 
       scoreService.removeMissFromScore(score);
 
@@ -294,8 +294,8 @@ describe('ScoresService', () => {
       const player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 0 },
-          { value: 200, misses: missCountForValidScore },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 200, misses: missCountForValidScore, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -309,9 +309,9 @@ describe('ScoresService', () => {
       const player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 0 },
-          { value: 200, misses: 3 },
-          { value: 300, misses: 3 },
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 200, misses: 3, isCanceled: false },
+          { value: 300, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -325,9 +325,9 @@ describe('ScoresService', () => {
       const player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 3 },
-          { value: 200, misses: 3 },
-          { value: 300, misses: 3 },
+          { value: 100, misses: 3, isCanceled: false },
+          { value: 200, misses: 3, isCanceled: false },
+          { value: 300, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -343,9 +343,9 @@ describe('ScoresService', () => {
       const player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 3 },
-          { value: 200, misses: 3 },
-          { value: 300, misses: 3 },
+          { value: 100, misses: 3, isCanceled: false },
+          { value: 200, misses: 3, isCanceled: false },
+          { value: 300, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -386,16 +386,16 @@ describe('ScoresService', () => {
         {
           name: 'ant',
           scores: [
-            { value: 100, misses: 3 },
-            { value: 200, misses: 3 },
+            { value: 100, misses: 3, isCanceled: false },
+            { value: 200, misses: 3, isCanceled: false },
           ],
           turnCount: 2,
         },
         {
           name: 'oro',
           scores: [
-            { value: 100, misses: 3 },
-            { value: 200, misses: 3 },
+            { value: 100, misses: 3, isCanceled: false },
+            { value: 200, misses: 3, isCanceled: false },
           ],
           turnCount: 2,
         },
@@ -452,7 +452,11 @@ describe('ScoresService', () => {
     const mockValueToWin = 1000;
 
     describe('if there is not player about to win', () => {
-      const mockPlayerNotWinning: Player = { name: 'mock-name', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const mockPlayerNotWinning: Player = {
+        name: 'mock-name',
+        scores: [{ value: 100, misses: 0, isCanceled: false }],
+        turnCount: 0,
+      };
 
       it('should return undefined', () => {
         const playerWinning = service.playerAboutToWin([mockPlayerNotWinning], mockValueToWin);
@@ -464,14 +468,14 @@ describe('ScoresService', () => {
     describe('if a player is about to win', () => {
       const mockPlayerNotWinning: Player = {
         name: 'mock-name-no-winning',
-        scores: [{ value: 100, misses: 0 }],
+        scores: [{ value: 100, misses: 0, isCanceled: false }],
         turnCount: 0,
       };
 
       describe('with score equal to value to win', () => {
         const mockPlayerWinning: Player = {
           name: 'mock-name-winning',
-          scores: [{ value: mockValueToWin, misses: 0 }],
+          scores: [{ value: mockValueToWin, misses: 0, isCanceled: false }],
           turnCount: 0,
         };
 
@@ -487,7 +491,7 @@ describe('ScoresService', () => {
       describe('with score over value to win', () => {
         const mockPlayerWinning: Player = {
           name: 'mock-name-winning',
-          scores: [{ value: mockValueToWin + 100, misses: 0 }],
+          scores: [{ value: mockValueToWin + 100, misses: 0, isCanceled: false }],
           turnCount: 0,
         };
 
@@ -503,13 +507,13 @@ describe('ScoresService', () => {
       describe('and another player has a score also higher than the value to win', () => {
         const mockPlayerWithLowerScore: Player = {
           name: 'mock-name-lower-score',
-          scores: [{ value: mockValueToWin + 100, misses: 0 }],
+          scores: [{ value: mockValueToWin + 100, misses: 0, isCanceled: false }],
           turnCount: 0,
         };
 
         const mockPlayerWinning: Player = {
           name: 'mock-name-winning',
-          scores: [{ value: mockValueToWin + 200, misses: 0 }],
+          scores: [{ value: mockValueToWin + 200, misses: 0, isCanceled: false }],
           turnCount: 0,
         };
 
@@ -526,12 +530,12 @@ describe('ScoresService', () => {
         it('should return the first player if he is the first to score the win', () => {
           const mockPlayerWinning: Player = {
             name: 'mock-name-winning',
-            scores: [{ value: mockValueToWin, misses: 0 }],
+            scores: [{ value: mockValueToWin, misses: 0, isCanceled: false }],
             turnCount: 1,
           };
           const mockPlayerReaching: Player = {
             name: 'mock-name-reaching',
-            scores: [{ value: mockValueToWin, misses: 0 }],
+            scores: [{ value: mockValueToWin, misses: 0, isCanceled: false }],
             turnCount: 1,
           };
           const mockPlayers = [mockPlayerWinning, mockPlayerReaching];
@@ -544,12 +548,12 @@ describe('ScoresService', () => {
         it('should return the second player if he is the first to score the win', () => {
           const mockPlayerWinning: Player = {
             name: 'mock-name-winning',
-            scores: [{ value: mockValueToWin, misses: 0 }],
+            scores: [{ value: mockValueToWin, misses: 0, isCanceled: false }],
             turnCount: 1,
           };
           const mockPlayerReaching: Player = {
             name: 'mock-name-reaching',
-            scores: [{ value: mockValueToWin, misses: 0 }],
+            scores: [{ value: mockValueToWin, misses: 0, isCanceled: false }],
             turnCount: 2,
           };
           const mockPlayers = [mockPlayerReaching, mockPlayerWinning];
@@ -564,13 +568,21 @@ describe('ScoresService', () => {
 
   describe('getTopPlayers()', () => {
     describe('when first player is first playing', () => {
-      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
-      const mockSecondPlayer: Player = {
-        name: 'mock-second-player',
-        scores: [{ value: 1000, misses: 0 }],
+      const mockFirstPlayer: Player = {
+        name: 'mock-first-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
         turnCount: 2,
       };
-      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
+      const mockThirdPlayer: Player = {
+        name: 'mock-third-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
 
       it('should return the 3 best players in order', () => {
         const mockPlayers = [mockFirstPlayer, mockSecondPlayer, mockThirdPlayer];
@@ -584,16 +596,24 @@ describe('ScoresService', () => {
     });
 
     describe('when first player is in the middle playing', () => {
-      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 3 };
+      const mockThirdPlayer: Player = {
+        name: 'mock-third-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 3,
+      };
       const mockLosingPlayer: Player = {
         name: 'mock-losing-player',
-        scores: [{ value: 200, misses: 0 }],
+        scores: [{ value: 200, misses: 0, isCanceled: false }],
         turnCount: 2,
       };
-      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockFirstPlayer: Player = {
+        name: 'mock-first-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
       const mockSecondPlayer: Player = {
         name: 'mock-second-player',
-        scores: [{ value: 1000, misses: 0 }],
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
         turnCount: 2,
       };
 
@@ -609,18 +629,26 @@ describe('ScoresService', () => {
     });
 
     describe('when first player at the end', () => {
-      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 800, misses: 0 }], turnCount: 3 };
+      const mockThirdPlayer: Player = {
+        name: 'mock-third-player',
+        scores: [{ value: 800, misses: 0, isCanceled: false }],
+        turnCount: 3,
+      };
       const mockLosingPlayer: Player = {
         name: 'mock-losing-player',
-        scores: [{ value: 200, misses: 0 }],
+        scores: [{ value: 200, misses: 0, isCanceled: false }],
         turnCount: 3,
       };
       const mockSecondPlayer: Player = {
         name: 'mock-second-player',
-        scores: [{ value: 1000, misses: 0 }],
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
         turnCount: 3,
       };
-      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockFirstPlayer: Player = {
+        name: 'mock-first-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
 
       it('should return the 3 best players in order', () => {
         const mockPlayers = [mockThirdPlayer, mockLosingPlayer, mockSecondPlayer, mockFirstPlayer];
@@ -636,7 +664,11 @@ describe('ScoresService', () => {
 
   describe('getTopPlayer()', () => {
     describe('when there is only one player', () => {
-      const mockPlayer: Player = { name: 'mock-player', scores: [{ value: 0, misses: 0 }], turnCount: 0 };
+      const mockPlayer: Player = {
+        name: 'mock-player',
+        scores: [{ value: 0, misses: 0, isCanceled: false }],
+        turnCount: 0,
+      };
 
       it('should the only player playing', () => {
         const mockPlayers = [mockPlayer];
@@ -648,13 +680,21 @@ describe('ScoresService', () => {
     });
 
     describe('when first player is first playing', () => {
-      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
-      const mockSecondPlayer: Player = {
-        name: 'mock-second-player',
-        scores: [{ value: 1000, misses: 0 }],
+      const mockFirstPlayer: Player = {
+        name: 'mock-first-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
         turnCount: 2,
       };
-      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockSecondPlayer: Player = {
+        name: 'mock-second-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
+      const mockThirdPlayer: Player = {
+        name: 'mock-third-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
 
       it('should return the 3 best players in order', () => {
         const mockPlayers = [mockFirstPlayer, mockSecondPlayer, mockThirdPlayer];
@@ -666,16 +706,24 @@ describe('ScoresService', () => {
     });
 
     describe('when first player is in the middle playing', () => {
-      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 1000, misses: 0 }], turnCount: 3 };
+      const mockThirdPlayer: Player = {
+        name: 'mock-third-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 3,
+      };
       const mockLosingPlayer: Player = {
         name: 'mock-losing-player',
-        scores: [{ value: 200, misses: 0 }],
+        scores: [{ value: 200, misses: 0, isCanceled: false }],
         turnCount: 2,
       };
-      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockFirstPlayer: Player = {
+        name: 'mock-first-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
       const mockSecondPlayer: Player = {
         name: 'mock-second-player',
-        scores: [{ value: 1000, misses: 0 }],
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
         turnCount: 2,
       };
 
@@ -689,18 +737,26 @@ describe('ScoresService', () => {
     });
 
     describe('when first player at the end', () => {
-      const mockThirdPlayer: Player = { name: 'mock-third-player', scores: [{ value: 800, misses: 0 }], turnCount: 3 };
+      const mockThirdPlayer: Player = {
+        name: 'mock-third-player',
+        scores: [{ value: 800, misses: 0, isCanceled: false }],
+        turnCount: 3,
+      };
       const mockLosingPlayer: Player = {
         name: 'mock-losing-player',
-        scores: [{ value: 200, misses: 0 }],
+        scores: [{ value: 200, misses: 0, isCanceled: false }],
         turnCount: 3,
       };
       const mockSecondPlayer: Player = {
         name: 'mock-second-player',
-        scores: [{ value: 1000, misses: 0 }],
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
         turnCount: 3,
       };
-      const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
+      const mockFirstPlayer: Player = {
+        name: 'mock-first-player',
+        scores: [{ value: 1000, misses: 0, isCanceled: false }],
+        turnCount: 2,
+      };
 
       it('should return the 3 best players in order', () => {
         const mockPlayers = [mockThirdPlayer, mockLosingPlayer, mockSecondPlayer, mockFirstPlayer];
@@ -709,6 +765,80 @@ describe('ScoresService', () => {
 
         expect(result).toBe(mockFirstPlayer);
       });
+    });
+  });
+
+  describe('findValidScoresWithSameValue()', () => {
+    it('should not return score of excluded player', () => {
+      const mockPlayer: Player = {
+        name: 'mock-player',
+        scores: [
+          { value: 200, misses: 0, isCanceled: false },
+          { value: 800, misses: 0, isCanceled: false },
+        ],
+        turnCount: 0,
+      };
+      const mockPlayers = [mockPlayer];
+
+      const result = service.findValidScoresWithSameValue(mockPlayer, 200, mockPlayers);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should return scores of other players if they are valid', () => {
+      const mockPlayerFirst: Player = {
+        name: 'mock-player-first',
+        scores: [{ value: 200, misses: 0, isCanceled: false }],
+        turnCount: 0,
+      };
+      const mockPlayerSecond: Player = {
+        name: 'mock-player-second',
+        scores: [
+          { value: 200, misses: 0, isCanceled: false },
+          { value: 800, misses: 0, isCanceled: false },
+        ],
+        turnCount: 0,
+      };
+      const mockPlayerThird: Player = {
+        name: 'mock-player-third',
+        scores: [
+          { value: 100, misses: 0, isCanceled: false },
+          { value: 200, misses: 0, isCanceled: false },
+          { value: 800, misses: 0, isCanceled: false },
+        ],
+        turnCount: 0,
+      };
+      const mockPlayers = [mockPlayerFirst, mockPlayerSecond, mockPlayerThird];
+
+      const result = service.findValidScoresWithSameValue(mockPlayerFirst, 200, mockPlayers);
+
+      expect(result).toStrictEqual([mockPlayerSecond.scores[0], mockPlayerThird.scores[1]]);
+    });
+
+    it('should not return scores of other players if they are invalid', () => {
+      const mockPlayerFirst: Player = {
+        name: 'mock-player-first',
+        scores: [{ value: 200, misses: 0, isCanceled: false }],
+        turnCount: 0,
+      };
+      const mockPlayerWithTooMuchMisses: Player = {
+        name: 'mock-player-with-too-much-misses',
+        scores: [
+          { value: 200, misses: 3, isCanceled: true },
+          { value: 800, misses: 0, isCanceled: false },
+        ],
+        turnCount: 0,
+      };
+      const mockPlayerWithScoreCanceled: Player = {
+        name: 'mock-player-with-score-canceled',
+        scores: [{ value: 200, misses: 0, isCanceled: true }],
+        turnCount: 0,
+      };
+      const mockPlayers = [mockPlayerFirst, mockPlayerWithTooMuchMisses, mockPlayerWithScoreCanceled];
+
+      const result = service.findValidScoresWithSameValue(mockPlayerFirst, 200, mockPlayers);
+
+      expect(result).toStrictEqual([]);
     });
   });
 });

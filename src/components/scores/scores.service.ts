@@ -35,7 +35,7 @@ export class ScoreService {
 
     const newScore: number = !lastScore ? toSave : lastScore.value + toSave;
 
-    const score = { value: newScore, misses: 0 };
+    const score = { value: newScore, misses: 0, isCanceled: false };
     player.scores.push(score);
 
     return score;
@@ -84,7 +84,11 @@ export class ScoreService {
   }
 
   public getLastValidScore(player: Player): Score | undefined {
-    return [...player.scores].reverse().find((score) => score.misses < 3);
+    return [...player.scores].reverse().find((score) => this.isScoreValid(score));
+  }
+
+  private isScoreValid(score: Score): boolean {
+    return score && score.misses < 3 && !score.isCanceled;
   }
 
   public resetAllPlayers(players: Player[]): Player[] {
@@ -153,6 +157,24 @@ export class ScoreService {
       const lastP2Score = this.getLastValidScore(p2)?.value ?? 0;
       return lastP2Score - lastP1Score || p1.turnCount - p2.turnCount;
     });
+  }
+
+  public findValidScoresWithSameValue(playerToExclude: Player, value: number, players: Player[]): Score[] {
+    const found = [];
+
+    for (const p of players) {
+      if (playerToExclude.name === p.name) {
+        continue;
+      }
+
+      for (const score of p.scores) {
+        if (score.value === value && this.isScoreValid(score)) {
+          found.push(score);
+        }
+      }
+    }
+
+    return found;
   }
 }
 

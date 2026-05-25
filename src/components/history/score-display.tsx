@@ -7,11 +7,11 @@ interface ScoreDisplayProps {
 }
 
 export const ScoreDisplay = ({ score, style }: ScoreDisplayProps) => {
-  const isCanceled = score.misses >= 3;
-  const missesNumberToShow = isCanceled ? 2 : score.misses;
+  const isInvalid = score.misses >= 3 || score.isCanceled;
+
   return (
-    <Text style={[style, isCanceled && styles.scoreCanceled]}>
-      {score.value} {'|'.repeat(missesNumberToShow)}
+    <Text style={[style, isInvalid && styles.scoreCanceled]}>
+      {score.value} {'|'.repeat(Math.min(score.misses, 2))}
     </Text>
   );
 };

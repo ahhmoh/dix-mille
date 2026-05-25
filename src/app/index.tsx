@@ -6,6 +6,8 @@ import { ButtonHistory } from '@/components/history/btn-history';
 import { historyMapperService } from '@/components/history/history-mapper.service';
 import { ModalHistory } from '@/components/history/modal-history';
 import { ButtonResetGame } from '@/components/reset-game/btn-reset-game';
+import { Rules } from '@/components/rules/rules';
+import { AddScoreWithScoreCancelCommand } from '@/components/scores/commands/add-score-with-score-cancel.command';
 import { Command } from '@/components/scores/commands/command';
 import { ListScores } from '@/components/scores/list-scores';
 import { scoreService } from '@/components/scores/scores.service';
@@ -30,6 +32,7 @@ export default function PlayPage() {
   const multiplicatorBaseValue = 3;
   const valueToWin = 10000;
 
+  const [rules, setRules] = useState<Rules>({ saveScoreCancelsOthers: true });
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
@@ -86,7 +89,7 @@ export default function PlayPage() {
       toAdd = die.valueBase;
     }
 
-    if ((toAdd += 0)) {
+    if (toAdd > 0) {
       setScoresAddedForTurn([...scoresAddedForTurn, toAdd]);
       setScoreTentative(scoreTentative + toAdd);
       setMultiplicator(multiplicatorBaseValue);
@@ -139,14 +142,14 @@ export default function PlayPage() {
     }
     command.undo();
 
-    keepPlayerListUpdated(previousPlayer);
+    updatePlayerList(previousPlayer);
     setCurrentPlayer(previousPlayer);
 
     resetForNewTurn();
   };
   //#endregion
 
-  const keepPlayerListUpdated = (player: Player): Player[] => {
+  const updatePlayerList = (player: Player): Player[] => {
     if (!player) {
       return playerList;
     }
@@ -167,11 +170,14 @@ export default function PlayPage() {
       return;
     }
 
-    const command = new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
+    const command = rules.saveScoreCancelsOthers
+      ? new AddScoreWithScoreCancelCommand(currentPlayer, scoreTentative, scoreService, turnService, playerList)
+      : new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
+
     command.execute();
     setScoreModificationCommands([...scoreModificationCommands, command]);
     setCurrentPlayer({ ...currentPlayer });
-    const playerListUpdated = keepPlayerListUpdated(currentPlayer);
+    const playerListUpdated = updatePlayerList(currentPlayer);
 
     resetForNewTurn();
     passTurnToNextPlayer(playerListUpdated);
@@ -186,7 +192,7 @@ export default function PlayPage() {
     command.execute();
     setScoreModificationCommands([...scoreModificationCommands, command]);
     setCurrentPlayer({ ...currentPlayer });
-    const playerListUpdated = keepPlayerListUpdated(currentPlayer);
+    const playerListUpdated = updatePlayerList(currentPlayer);
 
     resetForNewTurn();
     passTurnToNextPlayer(playerListUpdated);

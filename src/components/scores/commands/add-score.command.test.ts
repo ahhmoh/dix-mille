@@ -5,14 +5,14 @@ import { AddScoreCommand } from './add-score.command';
 
 describe('AddScoreCommand', () => {
   it('should throw if value to add is negative', () => {
-    const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+    const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
 
     expect(() => new AddScoreCommand(player, -100, scoreService, turnService)).toThrow();
   });
 
   describe('execute', () => {
     it('should add score to player', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
 
       command.execute();
@@ -25,7 +25,7 @@ describe('AddScoreCommand', () => {
     });
 
     it('should be executed only one time', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
       command.execute();
 
@@ -36,7 +36,7 @@ describe('AddScoreCommand', () => {
     });
 
     it('should add turn played', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
 
       command.execute();
@@ -47,7 +47,7 @@ describe('AddScoreCommand', () => {
 
   describe('undo', () => {
     it('should remove score if it is the last one', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
       command.execute();
 
@@ -60,11 +60,11 @@ describe('AddScoreCommand', () => {
     });
 
     it('should remove score if other scores have been added', () => {
-      const scores = [{ value: 100, misses: 0 }];
+      const scores = [{ value: 100, misses: 0, isCanceled: false }];
       const player: Player = { name: 'ant', scores, turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
       command.execute();
-      scores.push({ value: 300, misses: 0 });
+      scores.push({ value: 300, misses: 0, isCanceled: false });
 
       command.undo();
 
@@ -76,7 +76,7 @@ describe('AddScoreCommand', () => {
     });
 
     it('should not do anything if not already executed', () => {
-      const scores = [{ value: 100, misses: 0 }];
+      const scores = [{ value: 100, misses: 0, isCanceled: false }];
       const player: Player = { name: 'ant', scores, turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
 
@@ -88,7 +88,7 @@ describe('AddScoreCommand', () => {
     });
 
     it('should remove turn played', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddScoreCommand(player, 100, scoreService, turnService);
       command.execute();
       expect(player.turnCount).toBe(1);

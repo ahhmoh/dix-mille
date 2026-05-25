@@ -12,7 +12,7 @@ export function ButtonBankScore({ onPressCommand, style }: ButtonBankScoreProps)
     >
       <Ionicons
         name='checkmark-sharp'
-        size={60}
+        size={50}
         color={colors.primary}
       />
     </Pressable>
@@ -30,5 +30,4 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderRadius: 20,
   },
-  text: { fontSize: 40, color: colors.primary },
 });

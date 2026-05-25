@@ -635,6 +635,18 @@ describe('ScoresService', () => {
   });
 
   describe('getTopPlayer()', () => {
+    describe('when there is only one player', () => {
+      const mockPlayer: Player = { name: 'mock-player', scores: [{ value: 0, misses: 0 }], turnCount: 0 };
+
+      it('should the only player playing', () => {
+        const mockPlayers = [mockPlayer];
+
+        const result = service.getTopPlayer(mockPlayers);
+
+        expect(result).toBe(mockPlayer);
+      });
+    });
+
     describe('when first player is first playing', () => {
       const mockFirstPlayer: Player = { name: 'mock-first-player', scores: [{ value: 1000, misses: 0 }], turnCount: 2 };
       const mockSecondPlayer: Player = {

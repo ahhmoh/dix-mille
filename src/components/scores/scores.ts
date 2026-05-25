@@ -1,4 +1,8 @@
 export interface Score {
-    value: number;
-    misses: number;
+  value: number;
+  misses: number;
 }
+
+export const isScore = (object: any): object is Score => {
+  return 'value' in object && 'misses' in object;
+};

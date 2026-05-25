@@ -1,22 +1,24 @@
-import { Ionicons } from '@expo/vector-icons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { colors } from '../../constants/theme';
 
-type ButtonRollbackProps = { onPressCommand?: any; style?: StyleProp<ViewStyle> };
+type ButtonHistoryProps = { onPressCommand?: any; isDisabled: boolean; style?: StyleProp<ViewStyle> };
 
-export function ButtonRollback({ onPressCommand, style }: ButtonRollbackProps) {
+export function ButtonHistory({ onPressCommand, isDisabled, style }: ButtonHistoryProps) {
   return (
     <Pressable
       onPress={onPressCommand}
+      disabled={isDisabled}
       style={({ pressed }) => [
-        styles.btnMultiplicator,
+        styles.button,
         pressed ? styles.backgroundPressed : styles.backgroundIdle,
+        isDisabled && styles.backgroundDisabled,
         style,
       ]}
     >
-      <Ionicons
-        name='arrow-undo'
+      <FontAwesome
+        name='history'
         size={40}
         color={colors.primary}
       />
@@ -27,12 +29,15 @@ export function ButtonRollback({ onPressCommand, style }: ButtonRollbackProps) {
 const styles = StyleSheet.create({
   backgroundIdle: { backgroundColor: colors.background },
   backgroundPressed: { backgroundColor: colors.secondary },
-  btnMultiplicator: {
-    flex: 1,
+  backgroundDisabled: { backgroundColor: colors.secondary },
+  button: {
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
     borderColor: colors.primary,
-    borderRadius: 20,
+    borderRadius: 10,
+    width: 60,
+    height: 60,
   },
 });

@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   btnDeletePressed: { backgroundColor: colors.secondary },
   btnDeleteText: { fontSize: 25, color: colors.primary },
   iconCurrentlyPlaying: { flex: 0.4 },
-  iconHidden: { visibility: 'hidden' },
+  iconHidden: { opacity: 0 },
   playerInformation: { color: colors.primary },
   playerName: { flex: 2, fontSize: 25 },
   score: { flex: 1, fontSize: 25 },

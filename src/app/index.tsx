@@ -108,9 +108,7 @@ export default function PlayPage() {
 
     const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
 
-    if (multiplicator === multiplicatorBaseValue && scoresAddedForTurn.length === 0 && previousPlayer) {
-      setIsRollbackModalVisible(true);
-    } else if (isMultiplicatorActive) {
+    if (isMultiplicatorActive) {
       setIsMultiplicatorActive(false);
       setMultiplicator(multiplicatorBaseValue);
     } else if (scoresAddedForTurn.length !== 0) {
@@ -118,6 +116,8 @@ export default function PlayPage() {
 
       setScoresAddedForTurn(scoresAddedForTurn.slice(0, scoresAddedForTurn.length - 1));
       setScoreTentative(scoreTentative - toRemove);
+    } else if (multiplicator === multiplicatorBaseValue && scoresAddedForTurn.length === 0 && previousPlayer) {
+      setIsRollbackModalVisible(true);
     }
   };
 

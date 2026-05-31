@@ -7,8 +7,8 @@ describe('AddMissCommand', () => {
   describe('execute', () => {
     it('should add miss to player last score', () => {
       const scores = [
-        { value: 100, misses: 0 },
-        { value: 200, misses: 0 },
+        { value: 100, misses: 0, isCanceled: false },
+        { value: 200, misses: 0, isCanceled: false },
       ];
       const player: Player = { name: 'ant', scores, turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
@@ -21,8 +21,8 @@ describe('AddMissCommand', () => {
 
     it('should add miss to player last valid score only', () => {
       const scores = [
-        { value: 100, misses: 0 },
-        { value: 200, misses: 3 },
+        { value: 100, misses: 0, isCanceled: false },
+        { value: 200, misses: 3, isCanceled: false },
       ];
       const player: Player = { name: 'ant', scores, turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
@@ -34,7 +34,7 @@ describe('AddMissCommand', () => {
     });
 
     it('should be executed only one time', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
       command.execute();
 
@@ -45,7 +45,7 @@ describe('AddMissCommand', () => {
     });
 
     it('should add turn played', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
 
       command.execute();
@@ -66,8 +66,8 @@ describe('AddMissCommand', () => {
       const player: Player = {
         name: 'ant',
         scores: [
-          { value: 100, misses: 3 },
-          { value: 500, misses: 3 },
+          { value: 100, misses: 3, isCanceled: false },
+          { value: 500, misses: 3, isCanceled: false },
         ],
         turnCount: 0,
       };
@@ -81,7 +81,7 @@ describe('AddMissCommand', () => {
 
   describe('undo', () => {
     it('should remove miss', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
       command.execute();
 
@@ -92,12 +92,12 @@ describe('AddMissCommand', () => {
     });
 
     it('should remove score if other scores have been added', () => {
-      const scores = [{ value: 100, misses: 0 }];
+      const scores = [{ value: 100, misses: 0, isCanceled: false }];
       const player: Player = { name: 'ant', scores, turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
       command.execute();
       expect(scores[0].misses).toBe(1);
-      scores.push({ value: 300, misses: 0 });
+      scores.push({ value: 300, misses: 0, isCanceled: false });
 
       command.undo();
 
@@ -105,7 +105,7 @@ describe('AddMissCommand', () => {
     });
 
     it('should not do anything if not already executed', () => {
-      const scores = [{ value: 100, misses: 1 }];
+      const scores = [{ value: 100, misses: 1, isCanceled: false }];
       const player: Player = { name: 'ant', scores, turnCount: 1 };
       const command = new AddMissCommand(player, scoreService, turnService);
 
@@ -115,7 +115,7 @@ describe('AddMissCommand', () => {
     });
 
     it('should remove turn played', () => {
-      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0 }], turnCount: 0 };
+      const player: Player = { name: 'ant', scores: [{ value: 100, misses: 0, isCanceled: false }], turnCount: 0 };
       const command = new AddMissCommand(player, scoreService, turnService);
       command.execute();
       expect(player.turnCount).toBe(1);

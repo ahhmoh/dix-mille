@@ -1,15 +1,21 @@
 import { colors } from '@/constants/theme';
-import { Modal, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
-import { Rules } from './rules';
+import { useState } from 'react';
+import { Modal, Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Rule, Rules } from './rules';
 
 interface ModalRulesProps {
   visible: boolean;
-  onCloseModal: () => void;
+  onCloseButtonClick: (rules: Rules) => void;
   rules: Rules;
-  onRulesUpdated: (rules: Rules) => void;
 }
 
-export const ModalRules = ({ visible, onCloseModal, rules, onRulesUpdated }: ModalRulesProps) => {
+export const ModalRules = ({ visible, onCloseButtonClick, rules }: ModalRulesProps) => {
+  const [rulesUpdated, setRulesUpdated] = useState<Rules>(rules);
+
+  const firstErrorFound = Object.values(rules)
+    .map((rule: Rule<any>) => rule.error)
+    .find((error) => error);
+
   return (
     <Modal
       animationType='slide'
@@ -19,27 +25,43 @@ export const ModalRules = ({ visible, onCloseModal, rules, onRulesUpdated }: Mod
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.rulesContainer}>
+            <View style={[styles.rulesRow, rules.valueToWin.error && styles.ruleError]}>
+              <Text style={styles.ruleText}>Valeur pour gagner</Text>
+              <TextInput
+                onChangeText={(value) =>
+                  setRulesUpdated({
+                    ...rulesUpdated,
+                    valueToWin: { ...rulesUpdated.valueToWin, value: parseInt(value) },
+                  })
+                }
+                value={Number.isNaN(rulesUpdated.valueToWin.value) ? '' : rulesUpdated.valueToWin.value.toString()}
+                placeholder={'10000'}
+                keyboardType='numeric'
+                style={styles.ruleInput}
+              />
+            </View>
             <View style={styles.rulesRow}>
               <Text style={styles.ruleText}>Barrer les scores</Text>
               <Switch
                 trackColor={{ true: colors.secondary, false: colors.secondary }}
                 thumbColor={colors.primary}
-                onValueChange={() =>
-                  onRulesUpdated({ ...rules, saveScoreCancelsOthers: !rules.saveScoreCancelsOthers })
+                onValueChange={(value) =>
+                  setRulesUpdated({
+                    ...rulesUpdated,
+                    saveScoreCancelsOthers: { ...rulesUpdated.saveScoreCancelsOthers, value: value },
+                  })
                 }
-                value={rules.saveScoreCancelsOthers}
+                value={rulesUpdated.saveScoreCancelsOthers.value}
                 style={styles.ruleSwitch}
               />
             </View>
           </View>
 
+          <Text style={styles.errorMessage}>{firstErrorFound?.message}</Text>
+
           <Pressable
-            style={({ pressed }) => [
-              styles.buttonRow,
-              styles.button,
-              pressed ? styles.buttonClose : styles.buttonClosePressed,
-            ]}
-            onPress={onCloseModal}
+            style={({ pressed }) => [styles.button, pressed ? styles.buttonClose : styles.buttonClosePressed]}
+            onPress={() => onCloseButtonClick(rulesUpdated)}
           >
             <Text style={styles.buttonText}>OK</Text>
           </Pressable>
@@ -62,11 +84,22 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: colors.background,
   },
-  rulesContainer: { flex: 0.9 },
-  rulesRow: { flexDirection: 'row', alignItems: 'center', gap: 20 },
+  rulesContainer: { flex: 0.9, gap: 10 },
+  rulesRow: {
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    padding: 5,
+    borderWidth: 2,
+    borderRadius: 10,
+    borderColor: colors.primary,
+  },
+  ruleError: { borderWidth: 2, borderRadius: 10, borderColor: 'red' },
   ruleText: { flex: 0.7, fontSize: 15, color: colors.primary },
-  ruleSwitch: { flex: 0.2 },
-  buttonRow: { flex: 0.05 },
+  ruleSwitch: { flex: 0.3 },
+  ruleInput: { flex: 0.3 },
+  errorMessage: { flex: 0.08, color: 'red', paddingTop: 5 },
   button: { flex: 0.1, justifyContent: 'center', alignItems: 'center', borderRadius: 20 },
   buttonClose: { backgroundColor: colors.secondary },
   buttonClosePressed: { backgroundColor: colors.primary },

@@ -7,8 +7,10 @@ import { historyMapperService } from '@/components/history/history-mapper.servic
 import { ModalHistory } from '@/components/history/modal-history';
 import { ButtonResetGame } from '@/components/reset-game/btn-reset-game';
 import { ButtonRules } from '@/components/rules/btn-rules';
+import { initialRules } from '@/components/rules/initial-rules';
 import { ModalRules } from '@/components/rules/modal-rules';
 import { Rules } from '@/components/rules/rules';
+import { ValidatorField, validatorService } from '@/components/rules/validators/validator.service';
 import { AddScoreWithScoreCancelCommand } from '@/components/scores/commands/add-score-with-score-cancel.command';
 import { Command } from '@/components/scores/commands/command';
 import { ListScores } from '@/components/scores/list-scores';
@@ -32,9 +34,8 @@ import { AddScoreCommand } from '../components/scores/commands/add-score.command
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
-  const valueToWin = 10000;
 
-  const [rules, setRules] = useState<Rules>({ saveScoreCancelsOthers: true });
+  const [rules, setRules] = useState<Rules>(initialRules);
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
@@ -173,7 +174,7 @@ export default function PlayPage() {
       return;
     }
 
-    const command = rules.saveScoreCancelsOthers
+    const command = rules.saveScoreCancelsOthers.value
       ? new AddScoreWithScoreCancelCommand(currentPlayer, scoreTentative, scoreService, turnService, playerList)
       : new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
 
@@ -209,7 +210,7 @@ export default function PlayPage() {
     const nextPlayer = turnService.getNextPlayer(players, currentPlayer);
     if (!nextPlayer) {
       return;
-    } else if (nextPlayer.name === scoreService.playerAboutToWin(playerList, valueToWin)?.name) {
+    } else if (nextPlayer.name === scoreService.playerAboutToWin(playerList, rules.valueToWin.value)?.name) {
       setIsEndOfGameModalVisible(true);
     } else {
       setCurrentPlayer({ ...nextPlayer });
@@ -246,6 +247,17 @@ export default function PlayPage() {
     }
   };
 
+  const onRuleModalValidate = (rules: Rules): void => {
+    validatorService.validate(Object.values(rules));
+    setRules({ ...rules });
+
+    const firstErrorFound = Object.values(rules).find((rule: ValidatorField<any>) => rule.error !== null);
+
+    if (!firstErrorFound) {
+      setIsRulesModalVisible(false);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -279,8 +291,7 @@ export default function PlayPage() {
           <ButtonRules onPressCommand={() => setIsRulesModalVisible(true)} />
           <ModalRules
             visible={isRulesModalVisible}
-            onCloseModal={() => setIsRulesModalVisible(false)}
-            onRulesUpdated={(updated: Rules) => setRules({ ...updated })}
+            onCloseButtonClick={onRuleModalValidate}
             rules={rules}
           />
         </View>

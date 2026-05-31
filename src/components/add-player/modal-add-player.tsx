@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   buttonRow: { flex: 1.3, flexDirection: 'row', justifyContent: 'center' },
   button: {
     flex: 1,
+    height: 40,
     borderRadius: 20,
     padding: 10,
     elevation: 2,

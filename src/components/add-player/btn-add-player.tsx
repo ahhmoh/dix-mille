@@ -1,10 +1,11 @@
+import { useTheme } from '@/hooks/use-theme';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { colors } from '../../constants/theme';
 import { ModalAddPlayer } from './modal-add-player';
 
 type ButtonAddPlayerProps = { onPlayerAdded: (playerName: string) => void; playerNames: string[] };
+const theme = useTheme();
 
 export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerProps) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,7 +32,7 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
         <Ionicons
           name='person-add'
           size={40}
-          color={colors.primary}
+          color={theme.primary}
         />
       </Pressable>
 
@@ -46,8 +47,8 @@ export function ButtonAddPlayer({ onPlayerAdded, playerNames }: ButtonAddPlayerP
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: colors.background },
-  backgroundPressed: { backgroundColor: colors.secondary },
+  backgroundIdle: { backgroundColor: theme.background },
+  backgroundPressed: { backgroundColor: theme.secondary },
   btn: {
     display: 'flex',
     justifyContent: 'center',
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderWidth: 3,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
     borderRadius: 10,
   },
   text: { fontSize: 40 },

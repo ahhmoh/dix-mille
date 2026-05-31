@@ -1,7 +1,9 @@
+import { useTheme } from '@/hooks/use-theme';
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../../constants/theme';
 import { Player } from '../../player/player';
+
+const theme = useTheme();
 
 type ModalDeletePlayerProps = {
   isVisible: boolean;
@@ -45,28 +47,28 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
   },
   text: { fontSize: 30 },
   buttonRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 15 },
-  btnDeletePressed: { backgroundColor: colors.background },
+  btnDeletePressed: { backgroundColor: theme.background },
   btnDeleteText: { fontSize: 30 },
   playerName: { width: '40%', fontSize: 30 },
-  buttonCancel: { backgroundColor: colors.primary },
-  buttonCancelPressed: { backgroundColor: colors.secondary },
-  buttonValidate: { backgroundColor: colors.primary },
-  buttonValidatePressed: { backgroundColor: colors.secondary },
+  buttonCancel: { backgroundColor: theme.primary },
+  buttonCancelPressed: { backgroundColor: theme.secondary },
+  buttonValidate: { backgroundColor: theme.primary },
+  buttonValidatePressed: { backgroundColor: theme.secondary },
   button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5, width: 100 },
   textBtn: { color: 'white', fontWeight: 'bold', textAlign: 'center', fontSize: 20 },
 });

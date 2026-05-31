@@ -18,7 +18,8 @@ import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
 import { Dice, DiceName, Die } from '@/constants/dice-values';
-import { colors, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ButtonBankScore } from '../components/btn-bank-score';
@@ -31,6 +32,8 @@ import { ButtonScore } from '../components/score-buttons/button-score';
 import { ScoreDisplayer } from '../components/score-displayer/score-displayer';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
+
+const theme = useTheme();
 
 export default function PlayPage() {
   const multiplicatorBaseValue = 3;
@@ -381,7 +384,7 @@ export default function PlayPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', flexDirection: 'row', backgroundColor: colors.background },
+  container: { flex: 1, justifyContent: 'center', flexDirection: 'row', backgroundColor: theme.background },
   safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
   topBtnRow: { flex: 0.4, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
   previewZone: { flex: 1 },

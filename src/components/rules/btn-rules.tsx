@@ -1,7 +1,9 @@
+import { useTheme } from '@/hooks/use-theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../../constants/theme';
+
+const theme = useTheme();
 
 type ButtonRulesProps = { onPressCommand?: () => void; style?: StyleProp<ViewStyle> };
 
@@ -14,21 +16,21 @@ export function ButtonRules({ onPressCommand, style }: ButtonRulesProps) {
       <Ionicons
         name='settings-sharp'
         size={40}
-        color={colors.primary}
+        color={theme.primary}
       />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundIdle: { backgroundColor: colors.background },
-  backgroundPressed: { backgroundColor: colors.secondary },
+  backgroundIdle: { backgroundColor: theme.background },
+  backgroundPressed: { backgroundColor: theme.secondary },
   button: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
     borderRadius: 10,
     width: 60,
     height: 60,

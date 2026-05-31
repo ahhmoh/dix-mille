@@ -1,7 +1,9 @@
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { Rule, Rules } from './rules';
+
+const theme = useTheme();
 
 interface ModalRulesProps {
   visible: boolean;
@@ -43,8 +45,8 @@ export const ModalRules = ({ visible, onCloseButtonClick, rules }: ModalRulesPro
             <View style={styles.rulesRow}>
               <Text style={styles.ruleText}>Barrer les scores</Text>
               <Switch
-                trackColor={{ true: colors.secondary, false: colors.secondary }}
-                thumbColor={colors.primary}
+                trackColor={{ true: theme.secondary, false: theme.secondary }}
+                thumbColor={theme.primary}
                 onValueChange={(value) =>
                   setRulesUpdated({
                     ...rulesUpdated,
@@ -77,12 +79,12 @@ const styles = StyleSheet.create({
     flex: 0.4,
     borderRadius: 20,
     padding: 25,
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
   },
   rulesContainer: { flex: 0.9, gap: 10 },
   rulesRow: {
@@ -93,15 +95,15 @@ const styles = StyleSheet.create({
     padding: 5,
     borderWidth: 2,
     borderRadius: 10,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
   },
   ruleError: { borderWidth: 2, borderRadius: 10, borderColor: 'red' },
-  ruleText: { flex: 0.7, fontSize: 15, color: colors.primary },
+  ruleText: { flex: 0.7, fontSize: 15, color: theme.primary },
   ruleSwitch: { flex: 0.3 },
   ruleInput: { flex: 0.3 },
   errorMessage: { flex: 0.08, color: 'red', paddingTop: 5 },
   button: { flex: 0.1, justifyContent: 'center', alignItems: 'center', borderRadius: 20 },
-  buttonClose: { backgroundColor: colors.secondary },
-  buttonClosePressed: { backgroundColor: colors.primary },
+  buttonClose: { backgroundColor: theme.secondary },
+  buttonClosePressed: { backgroundColor: theme.primary },
   buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
 });

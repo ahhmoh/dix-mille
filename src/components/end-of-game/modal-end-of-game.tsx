@@ -1,9 +1,11 @@
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Player } from '../player/player';
 import { scoreService } from '../scores/scores.service';
 import { Podium } from './podium';
 import { SinglePlayerVictory } from './single-player-victory';
+
+const theme = useTheme();
 
 interface ModalEndOfGameProps {
   visible: boolean;
@@ -48,10 +50,10 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 0.4,
     margin: 20,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 20,
     padding: 35,
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
   },
   btnRow: { flex: 0.3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   button: { flex: 0.7, justifyContent: 'center', alignItems: 'center', borderRadius: 20, padding: 10, margin: 5 },
-  buttonClose: { backgroundColor: colors.primary },
-  buttonClosePressed: { backgroundColor: colors.secondary },
-  btnText: { color: colors.background, fontWeight: 'bold', textAlign: 'center', fontSize: 30 },
+  buttonClose: { backgroundColor: theme.primary },
+  buttonClosePressed: { backgroundColor: theme.secondary },
+  btnText: { color: theme.background, fontWeight: 'bold', textAlign: 'center', fontSize: 30 },
 });

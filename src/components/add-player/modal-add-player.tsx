@@ -1,6 +1,8 @@
+import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { colors } from '../../constants/theme';
+
+const theme = useTheme();
 
 interface ModalAddPlayerProps {
   visible: boolean;
@@ -120,34 +122,34 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
   },
   buttonRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5 },
-  buttonClose: { backgroundColor: colors.primary },
-  buttonClosePressed: { backgroundColor: colors.secondary },
-  buttonValidate: { backgroundColor: colors.primary },
-  buttonValidateDisabled: { backgroundColor: colors.secondary },
-  buttonValidatePressed: { backgroundColor: colors.secondary },
+  buttonClose: { backgroundColor: theme.primary },
+  buttonClosePressed: { backgroundColor: theme.secondary },
+  buttonValidate: { backgroundColor: theme.primary },
+  buttonValidateDisabled: { backgroundColor: theme.secondary },
+  buttonValidatePressed: { backgroundColor: theme.secondary },
   textStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
-  modalText: { marginBottom: 15, textAlign: 'center', color: colors.primary, fontWeight: 'bold' },
+  modalText: { marginBottom: 15, textAlign: 'center', color: theme.primary, fontWeight: 'bold' },
   inputText: {
     marginBottom: 15,
     textAlign: 'center',
     width: '100%',
     borderWidth: 1,
-    borderColor: colors.primary,
-    color: colors.primary,
+    borderColor: theme.primary,
+    color: theme.primary,
   },
 });

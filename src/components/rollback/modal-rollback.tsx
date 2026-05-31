@@ -1,5 +1,7 @@
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+
+const theme = useTheme();
 
 interface ModalRollbackProps {
   visible: boolean;
@@ -43,12 +45,12 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -56,10 +58,10 @@ const styles = StyleSheet.create({
   },
   buttonRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   button: { width: 60, borderRadius: 20, padding: 10, margin: 5 },
-  buttonClose: { backgroundColor: colors.secondary },
-  buttonClosePressed: { backgroundColor: colors.primary },
-  buttonValidate: { backgroundColor: colors.primary },
-  buttonValidatePressed: { backgroundColor: colors.secondary },
+  buttonClose: { backgroundColor: theme.secondary },
+  buttonClosePressed: { backgroundColor: theme.primary },
+  buttonValidate: { backgroundColor: theme.primary },
+  buttonValidatePressed: { backgroundColor: theme.secondary },
   textStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
   modalText: { marginBottom: 15, textAlign: 'center' },
 });

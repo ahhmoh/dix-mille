@@ -1,5 +1,7 @@
+import { useTheme } from '@/hooks/use-theme';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../constants/theme';
+
+const theme = useTheme();
 
 interface ModalResetGameProps {
   visible: boolean;
@@ -54,14 +56,14 @@ const styles = StyleSheet.create({
   centeredView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalView: {
     margin: 20,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 20,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
     borderWidth: 2,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: colors.secondary,
+    shadowColor: theme.secondary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -69,10 +71,10 @@ const styles = StyleSheet.create({
   },
   buttonColumn: { flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch' },
   button: { borderRadius: 20, padding: 10, elevation: 2, margin: 5 },
-  buttonCancel: { backgroundColor: colors.secondary },
-  buttonCancelPressed: { backgroundColor: colors.primary },
-  buttonValidate: { backgroundColor: colors.primary },
-  buttonValidatePressed: { backgroundColor: colors.secondary },
+  buttonCancel: { backgroundColor: theme.secondary },
+  buttonCancelPressed: { backgroundColor: theme.primary },
+  buttonValidate: { backgroundColor: theme.primary },
+  buttonValidatePressed: { backgroundColor: theme.secondary },
   btnTextStyle: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
   modalText: { marginBottom: 15, textAlign: 'center', fontSize: 25 },
 });

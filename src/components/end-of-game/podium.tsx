@@ -1,7 +1,9 @@
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { TopPlayers } from './top-players';
+
+const theme = useTheme();
 
 interface PodiumProps {
   players: TopPlayers;
@@ -62,10 +64,10 @@ export const Podium = ({ players }: PodiumProps) => {
 const styles = StyleSheet.create({
   podiumContainer: { flex: 1, flexDirection: 'row' },
   podiumColumn: { flex: 1, justifyContent: 'flex-end' },
-  podium: { borderWidth: 2, borderColor: colors.primary },
+  podium: { borderWidth: 2, borderColor: theme.primary },
   podiumFirst: { backgroundColor: 'blue' },
   podiumSecond: { backgroundColor: 'yellow' },
   podiumThird: { backgroundColor: 'green' },
   crownWinner: { alignSelf: 'center', color: '#cfa312' },
-  playerName: { fontSize: 20, alignSelf: 'center', color: colors.primary, marginBottom: 10 },
+  playerName: { fontSize: 20, alignSelf: 'center', color: theme.primary, marginBottom: 10 },
 });

@@ -1,10 +1,12 @@
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { isScore, Score } from '../scores/scores';
 import { EmptyCellDisplay } from './empty-cell-display';
 import { HeaderCellDisplay } from './header-cell-display';
 import { HeaderCell, isHeaderCell } from './header-cell.interface';
 import { ScoreDisplay } from './score-display';
+
+const theme = useTheme();
 
 interface ModalHistoryProps {
   visible: boolean;
@@ -21,7 +23,7 @@ export const ModalHistory = ({ visible, data, onCloseModal }: ModalHistoryProps)
     index: number;
   }) => {
     return (
-      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.background, gap: 10 }}>
+      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: theme.background, gap: 10 }}>
         {row.map((child, indexCol) => {
           const keyCell = `row-${indexRow}-cell-${indexCol}`;
 
@@ -92,21 +94,21 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 0.4,
     margin: 20,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 20,
     padding: 35,
     justifyContent: 'space-around',
     alignItems: 'center',
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
-  tableCell: { width: 60, backgroundColor: colors.background, gap: 10 },
+  tableCell: { width: 60, backgroundColor: theme.background, gap: 10 },
   headerCell: { fontWeight: 'bold' },
   button: { borderRadius: 20, padding: 10, margin: 5 },
-  buttonClose: { backgroundColor: colors.secondary },
-  buttonClosePressed: { backgroundColor: colors.primary },
+  buttonClose: { backgroundColor: theme.secondary },
+  buttonClosePressed: { backgroundColor: theme.primary },
   buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
 });

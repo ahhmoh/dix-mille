@@ -1,10 +1,12 @@
+import { useTheme } from '@/hooks/use-theme';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Animated, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../constants/theme';
 import { Player } from '../player/player';
 import { ModalDeletePlayer } from './delete-player/modal-delete-player';
 import { scoreService } from './scores.service';
+
+const theme = useTheme();
 
 type ListScoresProps = { players: Player[]; currentlyPlaying?: Player; onDeleteUser: (player: Player) => void };
 
@@ -30,7 +32,7 @@ export function ListScores({ players, currentlyPlaying, onDeleteUser }: ListScor
   const dangerAnimationValue = new Animated.Value(0);
   const dangerColor = dangerAnimationValue.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [colors.primary, 'red', colors.primary],
+    outputRange: [theme.primary, 'red', theme.primary],
   });
   let animation = Animated.loop(
     Animated.timing(dangerAnimationValue, { toValue: 1, duration: 1300, useNativeDriver: false })
@@ -54,7 +56,7 @@ export function ListScores({ players, currentlyPlaying, onDeleteUser }: ListScor
       <View style={styles.rowPlayer}>
         <Ionicons
           name='caret-forward-outline'
-          color={colors.primary}
+          color={theme.primary}
           size={30}
           style={[styles.iconCurrentlyPlaying, item.name !== currentlyPlaying?.name && styles.iconHidden]}
         />
@@ -124,9 +126,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
     borderRadius: 10,
-    shadowColor: colors.primary,
+    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -138,19 +140,19 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderWidth: 3,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
     borderRadius: 10,
   },
-  btnDeletePressed: { backgroundColor: colors.secondary },
-  btnDeleteText: { fontSize: 25, color: colors.primary },
+  btnDeletePressed: { backgroundColor: theme.secondary },
+  btnDeleteText: { fontSize: 25, color: theme.primary },
   iconCurrentlyPlaying: { flex: 0.4 },
   iconHidden: { opacity: 0 },
-  playerInformation: { color: colors.primary },
+  playerInformation: { color: theme.primary },
   playerName: { flex: 2, fontSize: 25 },
   score: { flex: 1, fontSize: 25 },
   misses: { flex: 0.3, fontSize: 25 },
   deleteSection: { flex: 0.4 },
 
   rowNoPlayer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  messageNoPlayer: { fontSize: 20, color: colors.primary, fontWeight: 'bold' },
+  messageNoPlayer: { fontSize: 20, color: theme.primary, fontWeight: 'bold' },
 });

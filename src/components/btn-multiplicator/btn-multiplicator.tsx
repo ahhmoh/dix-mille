@@ -1,5 +1,7 @@
+import { useTheme } from '@/hooks/use-theme';
 import { Pressable, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
-import { colors } from '../../constants/theme';
+
+const theme = useTheme();
 
 type ButtonMultiplicatorProps = {
   multiplicator: number;
@@ -24,11 +26,11 @@ export function ButtonMultiplicator({ multiplicator, isActive, onPressCommand, s
 }
 
 const styles = StyleSheet.create({
-  idle: { backgroundColor: colors.background, borderColor: colors.primary },
-  idleActive: { backgroundColor: colors.primary, borderColor: colors.background },
-  pressed: { backgroundColor: colors.secondary, borderColor: colors.primary },
+  idle: { backgroundColor: theme.background, borderColor: theme.primary },
+  idleActive: { backgroundColor: theme.primary, borderColor: theme.background },
+  pressed: { backgroundColor: theme.secondary, borderColor: theme.primary },
   btnMultiplicator: { flex: 1, justifyContent: 'center', alignItems: 'center', borderWidth: 3, borderRadius: 20 },
   text: { fontSize: 40 },
-  textIdle: { color: colors.primary },
-  textActive: { color: colors.background },
+  textIdle: { color: theme.primary },
+  textActive: { color: theme.background },
 });

@@ -8,6 +8,5 @@
   "semi": true,
   "singleAttributePerLine": true,
   "printWidth": 120,
-  "objectWrap": "collapse"
-  
+  "objectWrap": "preserve"
 }

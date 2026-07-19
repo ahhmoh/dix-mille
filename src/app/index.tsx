@@ -41,6 +41,7 @@ export default function PlayPage() {
   const [rules, setRules] = useState<Rules>(initialRules);
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [scoreTentative, setScoreTentative] = useState(0);
+  const [scoresFromPreviousPlayer, setScoresFromPreviousPlayer] = useState<number[]>([]);
   const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
   const [isMultiplicatorActive, setIsMultiplicatorActive] = useState(false);
   const [scoresAddedForTurn, setScoresAddedForTurn] = useState<number[]>([]);
@@ -142,12 +143,14 @@ export default function PlayPage() {
     }
 
     const command = scoreModificationCommands.pop();
-    setScoreModificationCommands([...scoreModificationCommands]);
-
     if (!command) {
       return;
     }
     command.undo();
+    setScoreModificationCommands([...scoreModificationCommands]);
+
+    scoresFromPreviousPlayer.pop();
+    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer]);
 
     updatePlayerList(previousPlayer);
     setCurrentPlayer(previousPlayer);
@@ -186,6 +189,8 @@ export default function PlayPage() {
     setCurrentPlayer({ ...currentPlayer });
     const playerListUpdated = updatePlayerList(currentPlayer);
 
+    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, scoreTentative]);
+
     resetForNewTurn();
     passTurnToNextPlayer(playerListUpdated);
   };
@@ -201,6 +206,7 @@ export default function PlayPage() {
     setCurrentPlayer({ ...currentPlayer });
     const playerListUpdated = updatePlayerList(currentPlayer);
 
+    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, 0]);
     resetForNewTurn();
     passTurnToNextPlayer(playerListUpdated);
   };
@@ -261,6 +267,13 @@ export default function PlayPage() {
     }
   };
 
+  const onPreviousScoreBtnClicked = () => {
+    const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
+
+    setScoreTentative(previousScore);
+    setScoresAddedForTurn([...scoresAddedForTurn, previousScore]);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -308,7 +321,14 @@ export default function PlayPage() {
         </View>
 
         <View style={styles.tentativeScoreZone}>
-          <ScoreDisplayer score={scoreTentative} />
+          <ScoreDisplayer
+            score={scoreTentative}
+            onPreviousBtnClicked={onPreviousScoreBtnClicked}
+            isBtnPreviousScoreDisabled={(() => {
+              const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
+              return !previousScore || scoreTentative === previousScore || scoreTentative !== 0;
+            })()}
+          />
         </View>
 
         <View style={styles.btnZone}>
@@ -388,7 +408,9 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
   topBtnRow: { flex: 0.4, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
   previewZone: { flex: 1 },
-  tentativeScoreZone: { flex: 0.5, justifyContent: 'center', alignItems: 'center' },
+  tentativeScoreZone: {
+    flex: 0.5,
+  },
   btnZone: { flex: 1, justifyContent: 'center', paddingRight: 76, paddingLeft: 76, paddingBottom: 50 },
   btnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch' },
   btn: { margin: 2 },

@@ -17,7 +17,12 @@ export function ScoreDisplayer({ score, onPreviousBtnClicked, isBtnPreviousScore
       <View style={styles.fillerCol}></View>
       <View style={styles.scoreContainer}>
         <View style={styles.scoreBox}>
-          <Text style={styles.score}>{score ?? ''}</Text>
+          <Text
+            style={styles.score}
+            numberOfLines={1}
+          >
+            {score ?? ''}
+          </Text>
         </View>
       </View>
       <View style={styles.fillerCol}>
@@ -47,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   scoreContainer: {
-    flex: 2.3,
+    flex: 3,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

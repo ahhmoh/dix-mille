@@ -167,5 +167,6 @@ const styles = StyleSheet.create({
   },
   btn: {
     flex: 1,
+    userSelect: 'none',
   },
 });

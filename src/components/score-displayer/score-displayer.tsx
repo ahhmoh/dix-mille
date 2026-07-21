@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     color: theme.primary,
     paddingLeft: 10,
     paddingRight: 10,
+    userSelect: 'none',
   },
   btnPrevious: {
     width: 60,

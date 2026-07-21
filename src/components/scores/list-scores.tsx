@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
+    userSelect: 'none',
   },
   rowPlayer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 15 },
   btnDelete: {

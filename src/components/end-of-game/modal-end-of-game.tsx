@@ -7,6 +7,7 @@ import { Podium } from './podium';
 import { SinglePlayerVictory } from './single-player-victory';
 
 const theme = useTheme();
+const victorySound = require('@/assets/sounds/victory-sound.mp3');
 
 interface ModalEndOfGameProps {
   visible: boolean;
@@ -14,13 +15,10 @@ interface ModalEndOfGameProps {
   onCloseModal: () => void;
 }
 
-const victorySound = require('@/assets/sounds/victory-sound.mp3');
-
 export const ModalEndOfGame = ({ visible, players, onCloseModal }: ModalEndOfGameProps) => {
   const showPodium = players.length >= 3;
 
   const sound = useAudioPlayer(victorySound);
-
   if (visible) {
     sound.seekTo(0);
     sound.play();

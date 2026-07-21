@@ -62,7 +62,7 @@ export default function PlayPage() {
   const [lastBtnPressed, setLastBtnPressed] = useState<ButtonType | undefined>();
   const [keyboardScores, setKeyboardScores] = useState<number[]>([]);
   const [keyboardScoreWritten, setKeyboardScoresWritten] = useState<number[]>([]);
-  const [scoreDisplayed, setScoreDisplayed] = useState<number | undefined>();
+  const [scoreDisplayed, setScoreDisplayed] = useState<number>(0);
 
   const resetKeyboardState = () => {
     setLastBtnPressed(undefined);
@@ -120,12 +120,12 @@ export default function PlayPage() {
     if (keyboardScoreWritten.length !== 0) {
       keyboardScoreWritten.pop();
       setKeyboardScoresWritten([...keyboardScoreWritten]);
-      setScoreDisplayed(keyboardScoreWritten.at(-1));
+      setScoreDisplayed(keyboardScoreWritten.at(-1) ?? 0);
     } else if (keyboardScores.length !== 0) {
       keyboardScores.pop();
       setKeyboardScores([...keyboardScores]);
       setKeyboardScoresWritten([]);
-      setScoreDisplayed(keyboardScores.at(-1));
+      setScoreDisplayed(keyboardScores.at(-1) ?? 0);
     } else {
       rollbackToPreviousPlayer();
     }

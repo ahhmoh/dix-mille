@@ -365,15 +365,17 @@ export default function PlayPage() {
           <Text style={styles.errorMessage}>{errorMessage}</Text>
         </View>
 
-        <Keyboard
-          onBtnScorePressed={onBtnScoreClicked}
-          onBtnAddPressed={onBtnAddClicked}
-          onBtnEqualPressed={onBtnEqualClicked}
-          onBtnRollbackPressed={onBtnRollbackClicked}
-          onBtnErasePressed={onBtnEraseClicked}
-          onBtnFailedPressed={onBtnFailedPressed}
-          onBtnValidatePressed={onBtnValidatePressed}
-        />
+        <View style={styles.keyboardZone}>
+          <Keyboard
+            onBtnScorePressed={onBtnScoreClicked}
+            onBtnAddPressed={onBtnAddClicked}
+            onBtnEqualPressed={onBtnEqualClicked}
+            onBtnRollbackPressed={onBtnRollbackClicked}
+            onBtnErasePressed={onBtnEraseClicked}
+            onBtnFailedPressed={onBtnFailedPressed}
+            onBtnValidatePressed={onBtnValidatePressed}
+          />
+        </View>
 
         <ModalEndOfGame
           visible={isEndOfGameModalVisible}
@@ -416,10 +418,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tentativeScoreZone: {
-    flex: 0.5,
-    alignItems: 'center',
+    flex: 0.3,
   },
   errorMessage: {
+    height: 10,
+    alignSelf: 'center',
     color: 'red',
+  },
+  keyboardZone: {
+    flex: 1,
+    paddingLeft: 60,
+    paddingRight: 60,
+    paddingBottom: 30,
   },
 });

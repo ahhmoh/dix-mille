@@ -159,8 +159,6 @@ const styles = StyleSheet.create({
   btnZone: {
     flex: 1,
     flexDirection: 'row',
-    paddingRight: 76,
-    paddingLeft: 76,
     gap: 2,
   },
   btnCol: {

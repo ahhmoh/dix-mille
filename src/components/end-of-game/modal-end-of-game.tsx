@@ -1,4 +1,5 @@
 import { useTheme } from '@/hooks/use-theme';
+import { useAudioPlayer } from 'expo-audio';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Player } from '../player/player';
 import { scoreService } from '../scores/scores.service';
@@ -13,8 +14,17 @@ interface ModalEndOfGameProps {
   onCloseModal: () => void;
 }
 
+const victorySound = require('@/assets/sounds/victory-sound.mp3');
+
 export const ModalEndOfGame = ({ visible, players, onCloseModal }: ModalEndOfGameProps) => {
   const showPodium = players.length >= 3;
+
+  const sound = useAudioPlayer(victorySound);
+
+  if (visible) {
+    sound.seekTo(0);
+    sound.play();
+  }
 
   return (
     <Modal

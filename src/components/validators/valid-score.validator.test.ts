@@ -1,7 +1,7 @@
-import { valueToWinValidator } from './value-to-win.validator';
+import { ValidScoreValidator } from './valid-score.validator';
 
-describe(valueToWinValidator.name, () => {
-  const validator = (value: number) => valueToWinValidator(value);
+describe(ValidScoreValidator.name, () => {
+  const validator = (value: number) => ValidScoreValidator(value);
 
   describe('if value is not above zero', () => {
     it.each([-1, -100, 0])('should return an error', (mockValueNotPositive) => {

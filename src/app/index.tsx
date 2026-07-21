@@ -1,34 +1,31 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { ButtonAddPlayer } from '@/components/add-player/btn-add-player';
 import { ModalEndOfGame } from '@/components/end-of-game/modal-end-of-game';
 import { ButtonHistory } from '@/components/history/btn-history';
 import { historyMapperService } from '@/components/history/history-mapper.service';
 import { ModalHistory } from '@/components/history/modal-history';
+import { ButtonType } from '@/components/keyboard/button-type.enum';
+import { Keyboard } from '@/components/keyboard/keyboard';
 import { ButtonResetGame } from '@/components/reset-game/btn-reset-game';
+import { ModalRollback } from '@/components/rollback/modal-rollback';
 import { ButtonRules } from '@/components/rules/btn-rules';
 import { initialRules } from '@/components/rules/initial-rules';
 import { ModalRules } from '@/components/rules/modal-rules';
 import { Rules } from '@/components/rules/rules';
-import { ValidatorField, validatorService } from '@/components/rules/validators/validator.service';
 import { AddScoreWithScoreCancelCommand } from '@/components/scores/commands/add-score-with-score-cancel.command';
 import { Command } from '@/components/scores/commands/command';
 import { ListScores } from '@/components/scores/list-scores';
 import { scoreService } from '@/components/scores/scores.service';
 import { ThemedView } from '@/components/themed-view';
 import { turnService } from '@/components/turns/turn.service';
-import { Dice, DiceName, Die } from '@/constants/dice-values';
+import { ValidScoreValidator } from '@/components/validators/valid-score.validator';
+import { ValidatorField, validatorService } from '@/components/validators/validator.service';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ButtonBankScore } from '../components/btn-bank-score';
-import { ButtonFailed } from '../components/btn-failed';
-import { ButtonMultiplicator } from '../components/btn-multiplicator/btn-multiplicator';
 import { Player } from '../components/player/player';
-import { ButtonRollback } from '../components/rollback/btn-rollback';
-import { ModalRollback } from '../components/rollback/modal-rollback';
-import { ButtonScore } from '../components/score-buttons/button-score';
 import { ScoreDisplayer } from '../components/score-displayer/score-displayer';
 import { AddMissCommand } from '../components/scores/commands/add-miss.command';
 import { AddScoreCommand } from '../components/scores/commands/add-score.command';
@@ -36,17 +33,13 @@ import { AddScoreCommand } from '../components/scores/commands/add-score.command
 const theme = useTheme();
 
 export default function PlayPage() {
-  const multiplicatorBaseValue = 3;
-
   const [rules, setRules] = useState<Rules>(initialRules);
-  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
-  const [scoreTentative, setScoreTentative] = useState(0);
-  const [scoresFromPreviousPlayer, setScoresFromPreviousPlayer] = useState<number[]>([]);
-  const [multiplicator, setMultiplicator] = useState(multiplicatorBaseValue);
-  const [isMultiplicatorActive, setIsMultiplicatorActive] = useState(false);
-  const [scoresAddedForTurn, setScoresAddedForTurn] = useState<number[]>([]);
-  const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
   const [playerList, setPlayerList] = useState<Player[]>([]);
+  const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
+
+  const [scoresFromPreviousPlayer, setScoresFromPreviousPlayer] = useState<number[]>([]);
+  const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
   const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
   const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
@@ -65,63 +58,152 @@ export default function PlayPage() {
     setPlayerList([...listWithoutPlayer]);
   };
 
-  const resetForNewTurn = () => {
-    setScoreTentative(0);
-    setMultiplicator(multiplicatorBaseValue);
-    setIsMultiplicatorActive(false);
-    setScoresAddedForTurn([]);
+  //#region keyboard
+  const [lastBtnPressed, setLastBtnPressed] = useState<ButtonType | undefined>();
+  const [keyboardScores, setKeyboardScores] = useState<number[]>([]);
+  const [keyboardScoreWritten, setKeyboardScoresWritten] = useState<number[]>([]);
+  const [scoreDisplayed, setScoreDisplayed] = useState<number | undefined>();
+
+  const resetKeyboardState = () => {
+    setLastBtnPressed(undefined);
+    setKeyboardScores([]);
+    setKeyboardScoresWritten([]);
+    setScoreDisplayed(0);
+
+    setErrorMessage(undefined);
   };
 
-  const onMultiplicatorPressed = () => {
-    if (!currentPlayer) {
-      return;
-    } else if (!isMultiplicatorActive) {
-      setIsMultiplicatorActive(true);
-    } else if (multiplicator < 6) {
-      setMultiplicator(multiplicator + 1);
-    }
-  };
-
-  const onBtnScorePressed = (die: Die) => {
-    if (!currentPlayer) {
-      return;
-    }
-
-    let toAdd: number = 0;
-
-    if (isMultiplicatorActive) {
-      toAdd = die.valueThreeTimes;
-      const multiplicatorPower = multiplicator - multiplicatorBaseValue;
-      toAdd = toAdd * Math.pow(2, multiplicatorPower);
+  const onBtnScoreClicked = (value: number) => {
+    if (lastBtnPressed === ButtonType.EQUAL || lastBtnPressed === ButtonType.PREVIOUS_SCORE) {
+      setKeyboardScores([...keyboardScores, 0]);
+      setKeyboardScoresWritten([value]);
+      setScoreDisplayed(value);
     } else {
-      toAdd = die.valueBase;
+      const lastScoreWritten = keyboardScoreWritten.at(-1);
+
+      let toDisplay = lastScoreWritten ? parseInt(String(lastScoreWritten) + value) : value;
+      setKeyboardScoresWritten([...keyboardScoreWritten, toDisplay]);
+      setScoreDisplayed(toDisplay);
     }
 
-    if (toAdd > 0) {
-      setScoresAddedForTurn([...scoresAddedForTurn, toAdd]);
-      setScoreTentative(scoreTentative + toAdd);
-      setMultiplicator(multiplicatorBaseValue);
-      setIsMultiplicatorActive(false);
+    setLastBtnPressed(ButtonType.SCORE);
+  };
+
+  const onBtnAddClicked = () => {
+    if (keyboardScoreWritten.length !== 0) {
+      addScores();
+    }
+
+    setLastBtnPressed(ButtonType.ADD);
+  };
+
+  const onBtnEqualClicked = () => {
+    if (keyboardScoreWritten.length !== 0) {
+      addScores();
+    }
+
+    setLastBtnPressed(ButtonType.EQUAL);
+  };
+
+  const addScores = () => {
+    const lastScore = keyboardScores.at(-1) ?? 0;
+    const total = lastScore + (keyboardScoreWritten.at(-1) ?? 0);
+
+    setKeyboardScores([...keyboardScores, total]);
+    setKeyboardScoresWritten([]);
+    setScoreDisplayed(total);
+
+    return total;
+  };
+
+  const onBtnRollbackClicked = () => {
+    if (keyboardScoreWritten.length !== 0) {
+      keyboardScoreWritten.pop();
+      setKeyboardScoresWritten([...keyboardScoreWritten]);
+      setScoreDisplayed(keyboardScoreWritten.at(-1));
+    } else if (keyboardScores.length !== 0) {
+      keyboardScores.pop();
+      setKeyboardScores([...keyboardScores]);
+      setKeyboardScoresWritten([]);
+      setScoreDisplayed(keyboardScores.at(-1));
+    } else {
+      rollbackToPreviousPlayer();
     }
   };
+
+  const onBtnEraseClicked = () => {
+    resetKeyboardState();
+  };
+
+  const onBtnFailedPressed = () => {
+    if (!currentPlayer) {
+      return;
+    }
+
+    const command = new AddMissCommand(currentPlayer, scoreService, turnService);
+    command.execute();
+    setScoreModificationCommands([...scoreModificationCommands, command]);
+    setCurrentPlayer({ ...currentPlayer });
+    const playerListUpdated = updatePlayerList(currentPlayer);
+
+    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, 0]);
+    resetKeyboardState();
+    passTurnToNextPlayer(playerListUpdated);
+  };
+
+  const onBtnValidatePressed = () => {
+    if (!currentPlayer) {
+      return;
+    }
+
+    const toAdd = (keyboardScoreWritten.length !== 0 ? addScores() : keyboardScores.at(-1)) ?? 0;
+
+    const field: ValidatorField<number> = {
+      value: toAdd,
+      validator: ValidScoreValidator,
+      error: null,
+    };
+    validatorService.validate([field]);
+
+    if (field.error) {
+      setErrorMessage(field.error.message);
+      return;
+    }
+
+    const command = rules.saveScoreCancelsOthers.value
+      ? new AddScoreWithScoreCancelCommand(currentPlayer, toAdd, scoreService, turnService, playerList)
+      : new AddScoreCommand(currentPlayer, toAdd, scoreService, turnService);
+
+    command.execute();
+    setScoreModificationCommands([...scoreModificationCommands, command]);
+    setCurrentPlayer({ ...currentPlayer });
+    const playerListUpdated = updatePlayerList(currentPlayer);
+
+    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, toAdd]);
+
+    resetKeyboardState();
+    passTurnToNextPlayer(playerListUpdated);
+  };
+
+  const onPreviousScoreBtnClicked = () => {
+    const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
+
+    setLastBtnPressed(ButtonType.PREVIOUS_SCORE);
+    setKeyboardScores([previousScore]);
+    setKeyboardScoresWritten([]);
+    setScoreDisplayed(previousScore);
+  };
+  //#endregion
 
   //#region rollback
-  const onBtnRollbackPressed = () => {
+  const rollbackToPreviousPlayer = () => {
     if (!currentPlayer) {
       return;
     }
 
     const previousPlayer = turnService.getPreviousPlayer(playerList, currentPlayer);
 
-    if (isMultiplicatorActive) {
-      setIsMultiplicatorActive(false);
-      setMultiplicator(multiplicatorBaseValue);
-    } else if (scoresAddedForTurn.length !== 0) {
-      const toRemove = scoresAddedForTurn[scoresAddedForTurn.length - 1];
-
-      setScoresAddedForTurn(scoresAddedForTurn.slice(0, scoresAddedForTurn.length - 1));
-      setScoreTentative(scoreTentative - toRemove);
-    } else if (multiplicator === multiplicatorBaseValue && scoresAddedForTurn.length === 0 && previousPlayer) {
+    if (previousPlayer) {
       setIsRollbackModalVisible(true);
     }
   };
@@ -155,7 +237,7 @@ export default function PlayPage() {
     updatePlayerList(previousPlayer);
     setCurrentPlayer(previousPlayer);
 
-    resetForNewTurn();
+    resetKeyboardState();
   };
   //#endregion
 
@@ -173,42 +255,6 @@ export default function PlayPage() {
     const updatedList = [...playerList];
     setPlayerList([...playerList]);
     return updatedList;
-  };
-
-  const onBtnValidatePressed = () => {
-    if (scoreTentative === 0 || !currentPlayer) {
-      return;
-    }
-
-    const command = rules.saveScoreCancelsOthers.value
-      ? new AddScoreWithScoreCancelCommand(currentPlayer, scoreTentative, scoreService, turnService, playerList)
-      : new AddScoreCommand(currentPlayer, scoreTentative, scoreService, turnService);
-
-    command.execute();
-    setScoreModificationCommands([...scoreModificationCommands, command]);
-    setCurrentPlayer({ ...currentPlayer });
-    const playerListUpdated = updatePlayerList(currentPlayer);
-
-    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, scoreTentative]);
-
-    resetForNewTurn();
-    passTurnToNextPlayer(playerListUpdated);
-  };
-
-  const onBtnFailedPressed = () => {
-    if (!currentPlayer) {
-      return;
-    }
-
-    const command = new AddMissCommand(currentPlayer, scoreService, turnService);
-    command.execute();
-    setScoreModificationCommands([...scoreModificationCommands, command]);
-    setCurrentPlayer({ ...currentPlayer });
-    const playerListUpdated = updatePlayerList(currentPlayer);
-
-    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, 0]);
-    resetForNewTurn();
-    passTurnToNextPlayer(playerListUpdated);
   };
 
   const passTurnToNextPlayer = (players: Player[]) => {
@@ -240,7 +286,7 @@ export default function PlayPage() {
     setPlayerList([]);
     setCurrentPlayer(undefined);
 
-    resetForNewTurn();
+    resetKeyboardState();
   };
 
   const onResetGameKeepingPlayers = () => {
@@ -249,7 +295,7 @@ export default function PlayPage() {
     setPlayerList([...players]);
     setCurrentPlayer(undefined);
 
-    resetForNewTurn();
+    resetKeyboardState();
 
     if (players.length != 0) {
       setCurrentPlayer({ ...players[0] });
@@ -267,22 +313,9 @@ export default function PlayPage() {
     }
   };
 
-  const onPreviousScoreBtnClicked = () => {
-    const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
-
-    setScoreTentative(previousScore);
-    setScoresAddedForTurn([...scoresAddedForTurn, previousScore]);
-  };
-
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ModalEndOfGame
-          visible={isEndOfGameModalVisible}
-          players={playerList}
-          onCloseModal={() => setIsEndOfGameModalVisible(false)}
-        />
-
         <View style={styles.topBtnRow}>
           <ButtonAddPlayer
             onPlayerAdded={onAddPlayer}
@@ -322,96 +355,71 @@ export default function PlayPage() {
 
         <View style={styles.tentativeScoreZone}>
           <ScoreDisplayer
-            score={scoreTentative}
+            score={scoreDisplayed}
             onPreviousBtnClicked={onPreviousScoreBtnClicked}
             isBtnPreviousScoreDisabled={(() => {
               const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
-              return !previousScore || scoreTentative === previousScore || scoreTentative !== 0;
+              return !previousScore || scoreDisplayed === previousScore;
             })()}
           />
+          <Text style={styles.errorMessage}>{errorMessage}</Text>
         </View>
 
-        <View style={styles.btnZone}>
-          <View style={styles.btnRow}>
-            <ButtonScore
-              die={Dice[DiceName.ONE]}
-              onPressCommand={onBtnScorePressed}
-              style={styles.btn}
-            />
-            <ButtonScore
-              die={Dice[DiceName.TWO]}
-              onPressCommand={onBtnScorePressed}
-              style={styles.btn}
-            />
-            <ButtonScore
-              die={Dice[DiceName.THREE]}
-              onPressCommand={onBtnScorePressed}
-              style={styles.btn}
-            />
-          </View>
-          <View style={styles.btnRow}>
-            <ButtonScore
-              die={Dice[DiceName.FOUR]}
-              onPressCommand={onBtnScorePressed}
-              style={styles.btn}
-            />
-            <ButtonScore
-              die={Dice[DiceName.FIVE]}
-              onPressCommand={onBtnScorePressed}
-              style={styles.btn}
-            />
-            <ButtonScore
-              die={Dice[DiceName.SIX]}
-              onPressCommand={onBtnScorePressed}
-              style={styles.btn}
-            />
-          </View>
-          <View style={styles.btnRow}>
-            <ButtonMultiplicator
-              multiplicator={multiplicator}
-              isActive={isMultiplicatorActive}
-              onPressCommand={onMultiplicatorPressed}
-              style={styles.btn}
-            />
-            <ButtonRollback
-              onPressCommand={onBtnRollbackPressed}
-              style={styles.btn}
-            />
+        <Keyboard
+          onBtnScorePressed={onBtnScoreClicked}
+          onBtnAddPressed={onBtnAddClicked}
+          onBtnEqualPressed={onBtnEqualClicked}
+          onBtnRollbackPressed={onBtnRollbackClicked}
+          onBtnErasePressed={onBtnEraseClicked}
+          onBtnFailedPressed={onBtnFailedPressed}
+          onBtnValidatePressed={onBtnValidatePressed}
+        />
 
-            {currentPlayer && (
-              <ModalRollback
-                visible={isRollbackModalVisible}
-                lastPlayerName={turnService.getPreviousPlayer(playerList, currentPlayer)?.name}
-                onCloseModal={onRollbackModalCancel}
-                onValidateModal={onRollbackModalValidate}
-              />
-            )}
-          </View>
-          <View style={styles.btnRow}>
-            <ButtonFailed
-              onPressCommand={onBtnFailedPressed}
-              style={styles.btn}
-            />
-            <ButtonBankScore
-              onPressCommand={onBtnValidatePressed}
-              style={styles.btn}
-            />
-          </View>
-        </View>
+        <ModalEndOfGame
+          visible={isEndOfGameModalVisible}
+          players={playerList}
+          onCloseModal={() => setIsEndOfGameModalVisible(false)}
+        />
+
+        {currentPlayer && (
+          <ModalRollback
+            visible={isRollbackModalVisible}
+            lastPlayerName={turnService.getPreviousPlayer(playerList, currentPlayer)?.name}
+            onCloseModal={onRollbackModalCancel}
+            onValidateModal={onRollbackModalValidate}
+          />
+        )}
       </SafeAreaView>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', flexDirection: 'row', backgroundColor: theme.background },
-  safeArea: { flex: 1, gap: Spacing.three, maxWidth: 400 },
-  topBtnRow: { flex: 0.4, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' },
-  previewZone: { flex: 1 },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: theme.background,
+  },
+  safeArea: {
+    flex: 1,
+    gap: Spacing.three,
+    maxWidth: 400,
+  },
+  topBtnRow: {
+    flex: 0.4,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  previewZone: {
+    flex: 1,
+  },
   tentativeScoreZone: {
     flex: 0.5,
+    alignItems: 'center',
   },
-  btnZone: { flex: 1, justifyContent: 'center', paddingRight: 76, paddingLeft: 76, paddingBottom: 50 },
-  btnRow: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch' },
-  btn: { margin: 2 },
+  errorMessage: {
+    color: 'red',
+  },
 });

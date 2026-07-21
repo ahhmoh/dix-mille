@@ -1,5 +1,6 @@
 import { useTheme } from '@/hooks/use-theme';
-import { Pressable, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 type ButtonFailedProps = { onPressCommand?: any; style?: StyleProp<ViewStyle> };
 const theme = useTheme();
@@ -10,7 +11,11 @@ export function ButtonFailed({ onPressCommand, style }: ButtonFailedProps) {
       onPress={onPressCommand}
       style={({ pressed }) => [styles.button, pressed ? styles.backgroundPressed : styles.backgroundIdle, style]}
     >
-      <Text style={styles.text}>raté :)</Text>
+      <Entypo
+        name='cross'
+        size={47}
+        color={theme.primary}
+      />
     </Pressable>
   );
 }

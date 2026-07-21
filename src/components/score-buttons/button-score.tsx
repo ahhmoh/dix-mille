@@ -1,19 +1,22 @@
-import { Die } from '@/constants/dice-values';
 import { useTheme } from '@/hooks/use-theme';
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
 
 const theme = useTheme();
 
-type ButtonScoreProps = { die?: Die; onPressCommand?: any; style: StyleProp<ViewStyle> };
+type ButtonScoreProps = {
+  value: number;
+  onPressCommand: (value: number) => void;
+  style: StyleProp<ViewStyle>;
+};
 
-export function ButtonScore({ die, onPressCommand, style }: ButtonScoreProps) {
+export function ButtonScore({ value, onPressCommand, style }: ButtonScoreProps) {
   return (
     <Pressable
-      onPress={() => onPressCommand(die)}
+      onPress={() => onPressCommand(value)}
       style={({ pressed }) => [styles.btnScore, pressed ? styles.backgroundPressed : styles.backgroundIdle, style]}
     >
-      <Text style={styles.text}>{die?.alphanumeric}</Text>
+      <Text style={styles.text}>{value}</Text>
     </Pressable>
   );
 }

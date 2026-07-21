@@ -17,7 +17,7 @@ export function ScoreDisplayer({ score, onPreviousBtnClicked, isBtnPreviousScore
       <View style={styles.fillerCol}></View>
       <View style={styles.scoreContainer}>
         <View style={styles.scoreBox}>
-          <Text style={styles.score}>{score}</Text>
+          <Text style={styles.score}>{score ?? ''}</Text>
         </View>
       </View>
       <View style={styles.fillerCol}>

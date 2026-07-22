@@ -1,5 +1,5 @@
 import { useTheme } from '@/hooks/use-theme';
-import { AntDesign, Entypo, FontAwesome6, Ionicons } from '@expo/vector-icons';
+import { Entypo, FontAwesome6, Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ButtonWithIcon } from '../btn-with-icon';
@@ -9,8 +9,6 @@ const theme = useTheme();
 
 type KeyboardProps = {
   onBtnScorePressed: (toDisplay: number) => void;
-  onBtnAddPressed: () => void;
-  onBtnEqualPressed: () => void;
   onBtnRollbackPressed: () => void;
   onBtnErasePressed: () => void;
   onBtnFailedPressed: () => void;
@@ -19,8 +17,6 @@ type KeyboardProps = {
 
 export function Keyboard({
   onBtnScorePressed,
-  onBtnAddPressed,
-  onBtnEqualPressed,
   onBtnRollbackPressed,
   onBtnErasePressed,
   onBtnFailedPressed,
@@ -28,86 +24,22 @@ export function Keyboard({
 }: KeyboardProps) {
   return (
     <View style={styles.btnZone}>
-      <View style={styles.btnCol}>
+      <View style={styles.btnRow}>
         <ButtonScore
           value={7}
           onPressCommand={onBtnScorePressed}
           style={styles.btn}
         />
         <ButtonScore
-          value={4}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-        <ButtonScore
-          value={1}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-        <ButtonScore
-          value={0}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-      </View>
-
-      <View style={styles.btnCol}>
-        <ButtonScore
           value={8}
           onPressCommand={onBtnScorePressed}
           style={styles.btn}
         />
         <ButtonScore
-          value={5}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-        <ButtonScore
-          value={2}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-        <ButtonWithIcon
-          onPressCommand={onBtnAddPressed}
-          style={styles.btn}
-        >
-          <AntDesign
-            name='plus'
-            size={40}
-            color={theme.primary}
-          />
-        </ButtonWithIcon>
-      </View>
-
-      <View style={styles.btnCol}>
-        <ButtonScore
           value={9}
           onPressCommand={onBtnScorePressed}
           style={styles.btn}
         />
-        <ButtonScore
-          value={6}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-        <ButtonScore
-          value={3}
-          onPressCommand={onBtnScorePressed}
-          style={styles.btn}
-        />
-
-        <ButtonWithIcon
-          onPressCommand={onBtnEqualPressed}
-          style={styles.btn}
-        >
-          <FontAwesome6
-            name='equals'
-            size={40}
-            color={theme.primary}
-          />
-        </ButtonWithIcon>
-      </View>
-      <View style={styles.btnCol}>
         <ButtonWithIcon
           onPressCommand={onBtnRollbackPressed}
           style={[styles.btn]}
@@ -118,6 +50,24 @@ export function Keyboard({
             color={theme.primary}
           />
         </ButtonWithIcon>
+      </View>
+
+      <View style={styles.btnRow}>
+        <ButtonScore
+          value={4}
+          onPressCommand={onBtnScorePressed}
+          style={styles.btn}
+        />
+        <ButtonScore
+          value={5}
+          onPressCommand={onBtnScorePressed}
+          style={styles.btn}
+        />
+        <ButtonScore
+          value={6}
+          onPressCommand={onBtnScorePressed}
+          style={styles.btn}
+        />
         <ButtonWithIcon
           onPressCommand={onBtnErasePressed}
           style={styles.btn}
@@ -128,6 +78,23 @@ export function Keyboard({
             color={theme.primary}
           />
         </ButtonWithIcon>
+      </View>
+      <View style={styles.btnRow}>
+        <ButtonScore
+          value={1}
+          onPressCommand={onBtnScorePressed}
+          style={styles.btn}
+        />
+        <ButtonScore
+          value={2}
+          onPressCommand={onBtnScorePressed}
+          style={styles.btn}
+        />
+        <ButtonScore
+          value={3}
+          onPressCommand={onBtnScorePressed}
+          style={styles.btn}
+        />
         <ButtonWithIcon
           onPressCommand={onBtnFailedPressed}
           style={[styles.btn, { backgroundColor: '#fab2a5' }]}
@@ -139,6 +106,13 @@ export function Keyboard({
             color={theme.primary}
           />
         </ButtonWithIcon>
+      </View>
+      <View style={styles.btnRow}>
+        <ButtonScore
+          value={0}
+          onPressCommand={onBtnScorePressed}
+          style={[styles.btn, { flex: 3 }]}
+        />
         <ButtonWithIcon
           onPressCommand={onBtnValidatePressed}
           style={[styles.btn, { backgroundColor: '#C1E1C1' }]}
@@ -158,11 +132,11 @@ export function Keyboard({
 const styles = StyleSheet.create({
   btnZone: {
     flex: 1,
-    flexDirection: 'row',
     gap: 2,
   },
-  btnCol: {
+  btnRow: {
     flex: 1,
+    flexDirection: 'row',
     gap: 2,
   },
   btn: {

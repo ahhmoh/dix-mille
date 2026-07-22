@@ -5,7 +5,6 @@ import { ModalEndOfGame } from '@/components/end-of-game/modal-end-of-game';
 import { ButtonHistory } from '@/components/history/btn-history';
 import { historyMapperService } from '@/components/history/history-mapper.service';
 import { ModalHistory } from '@/components/history/modal-history';
-import { ButtonType } from '@/components/keyboard/button-type.enum';
 import { Keyboard } from '@/components/keyboard/keyboard';
 import { ButtonResetGame } from '@/components/reset-game/btn-reset-game';
 import { ModalRollback } from '@/components/rollback/modal-rollback';
@@ -34,15 +33,14 @@ const theme = useTheme();
 
 export default function PlayPage() {
   const [rules, setRules] = useState<Rules>(initialRules);
+  const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
+
   const [playerList, setPlayerList] = useState<Player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
-
-  const [scoresFromPreviousPlayer, setScoresFromPreviousPlayer] = useState<number[]>([]);
   const [scoreModificationCommands, setScoreModificationCommands] = useState<Command[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
+
   const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
-  const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
   const [isEndOfGameModalVisible, setIsEndOfGameModalVisible] = useState(false);
 
   const onDeleteUser = (player: Player) => {
@@ -59,73 +57,24 @@ export default function PlayPage() {
   };
 
   //#region keyboard
-  const [lastBtnPressed, setLastBtnPressed] = useState<ButtonType | undefined>();
-  const [keyboardScores, setKeyboardScores] = useState<number[]>([]);
   const [keyboardScoreWritten, setKeyboardScoresWritten] = useState<number[]>([]);
-  const [scoreDisplayed, setScoreDisplayed] = useState<number>(0);
 
   const resetKeyboardState = () => {
-    setLastBtnPressed(undefined);
-    setKeyboardScores([]);
     setKeyboardScoresWritten([]);
-    setScoreDisplayed(0);
-
     setErrorMessage(undefined);
   };
 
   const onBtnScoreClicked = (value: number) => {
-    if (lastBtnPressed === ButtonType.EQUAL || lastBtnPressed === ButtonType.PREVIOUS_SCORE) {
-      setKeyboardScores([...keyboardScores, 0]);
-      setKeyboardScoresWritten([value]);
-      setScoreDisplayed(value);
-    } else {
-      const lastScoreWritten = keyboardScoreWritten.at(-1);
+    const lastScoreWritten = keyboardScoreWritten.at(-1);
 
-      let toDisplay = lastScoreWritten ? parseInt(String(lastScoreWritten) + value) : value;
-      setKeyboardScoresWritten([...keyboardScoreWritten, toDisplay]);
-      setScoreDisplayed(toDisplay);
-    }
-
-    setLastBtnPressed(ButtonType.SCORE);
-  };
-
-  const onBtnAddClicked = () => {
-    if (keyboardScoreWritten.length !== 0) {
-      addScores();
-    }
-
-    setLastBtnPressed(ButtonType.ADD);
-  };
-
-  const onBtnEqualClicked = () => {
-    if (keyboardScoreWritten.length !== 0) {
-      addScores();
-    }
-
-    setLastBtnPressed(ButtonType.EQUAL);
-  };
-
-  const addScores = () => {
-    const lastScore = keyboardScores.at(-1) ?? 0;
-    const total = lastScore + (keyboardScoreWritten.at(-1) ?? 0);
-
-    setKeyboardScores([...keyboardScores, total]);
-    setKeyboardScoresWritten([]);
-    setScoreDisplayed(total);
-
-    return total;
+    let toDisplay = lastScoreWritten ? parseInt(String(lastScoreWritten) + value) : value;
+    setKeyboardScoresWritten([...keyboardScoreWritten, toDisplay]);
   };
 
   const onBtnRollbackClicked = () => {
     if (keyboardScoreWritten.length !== 0) {
       keyboardScoreWritten.pop();
       setKeyboardScoresWritten([...keyboardScoreWritten]);
-      setScoreDisplayed(keyboardScoreWritten.at(-1) ?? 0);
-    } else if (keyboardScores.length !== 0) {
-      keyboardScores.pop();
-      setKeyboardScores([...keyboardScores]);
-      setKeyboardScoresWritten([]);
-      setScoreDisplayed(keyboardScores.at(-1) ?? 0);
     } else {
       rollbackToPreviousPlayer();
     }
@@ -146,7 +95,6 @@ export default function PlayPage() {
     setCurrentPlayer({ ...currentPlayer });
     const playerListUpdated = updatePlayerList(currentPlayer);
 
-    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, 0]);
     resetKeyboardState();
     passTurnToNextPlayer(playerListUpdated);
   };
@@ -156,7 +104,7 @@ export default function PlayPage() {
       return;
     }
 
-    const toAdd = (keyboardScoreWritten.length !== 0 ? addScores() : keyboardScores.at(-1)) ?? 0;
+    const toAdd = keyboardScoreWritten.at(-1) ?? 0;
 
     const field: ValidatorField<number> = {
       value: toAdd,
@@ -179,23 +127,14 @@ export default function PlayPage() {
     setCurrentPlayer({ ...currentPlayer });
     const playerListUpdated = updatePlayerList(currentPlayer);
 
-    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer, toAdd]);
-
     resetKeyboardState();
     passTurnToNextPlayer(playerListUpdated);
-  };
-
-  const onPreviousScoreBtnClicked = () => {
-    const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
-
-    setLastBtnPressed(ButtonType.PREVIOUS_SCORE);
-    setKeyboardScores([previousScore]);
-    setKeyboardScoresWritten([]);
-    setScoreDisplayed(previousScore);
   };
   //#endregion
 
   //#region rollback
+  const [isRollbackModalVisible, setIsRollbackModalVisible] = useState(false);
+
   const rollbackToPreviousPlayer = () => {
     if (!currentPlayer) {
       return;
@@ -230,9 +169,6 @@ export default function PlayPage() {
     }
     command.undo();
     setScoreModificationCommands([...scoreModificationCommands]);
-
-    scoresFromPreviousPlayer.pop();
-    setScoresFromPreviousPlayer([...scoresFromPreviousPlayer]);
 
     updatePlayerList(previousPlayer);
     setCurrentPlayer(previousPlayer);
@@ -354,22 +290,13 @@ export default function PlayPage() {
         </View>
 
         <View style={styles.tentativeScoreZone}>
-          <ScoreDisplayer
-            score={scoreDisplayed}
-            onPreviousBtnClicked={onPreviousScoreBtnClicked}
-            isBtnPreviousScoreDisabled={(() => {
-              const previousScore = scoresFromPreviousPlayer[scoresFromPreviousPlayer.length - 1];
-              return !previousScore || scoreDisplayed === previousScore;
-            })()}
-          />
+          <ScoreDisplayer score={keyboardScoreWritten.at(-1) ?? 0} />
           <Text style={styles.errorMessage}>{errorMessage}</Text>
         </View>
 
         <View style={styles.keyboardZone}>
           <Keyboard
             onBtnScorePressed={onBtnScoreClicked}
-            onBtnAddPressed={onBtnAddClicked}
-            onBtnEqualPressed={onBtnEqualClicked}
             onBtnRollbackPressed={onBtnRollbackClicked}
             onBtnErasePressed={onBtnEraseClicked}
             onBtnFailedPressed={onBtnFailedPressed}
@@ -419,6 +346,8 @@ const styles = StyleSheet.create({
   },
   tentativeScoreZone: {
     flex: 0.3,
+    paddingLeft: 60,
+    paddingRight: 60,
   },
   errorMessage: {
     height: 10,

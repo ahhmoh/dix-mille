@@ -1,20 +1,16 @@
 import { useTheme } from '@/hooks/use-theme';
-import { Fontisto } from '@expo/vector-icons';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 const theme = useTheme();
 
 type ScoreDisplayerProps = {
   score?: number;
-  onPreviousBtnClicked: () => void;
-  isBtnPreviousScoreDisabled: boolean;
 };
 
-export function ScoreDisplayer({ score, onPreviousBtnClicked, isBtnPreviousScoreDisabled }: ScoreDisplayerProps) {
+export function ScoreDisplayer({ score }: ScoreDisplayerProps) {
   return (
     <View style={styles.row}>
-      <View style={styles.fillerCol}></View>
       <View style={styles.scoreContainer}>
         <View style={styles.scoreBox}>
           <Text
@@ -24,23 +20,6 @@ export function ScoreDisplayer({ score, onPreviousBtnClicked, isBtnPreviousScore
             {score ?? ''}
           </Text>
         </View>
-      </View>
-      <View style={styles.fillerCol}>
-        <Pressable
-          onPress={onPreviousBtnClicked}
-          disabled={isBtnPreviousScoreDisabled}
-          style={({ pressed }) => [
-            styles.btnPrevious,
-            pressed && styles.btnPreviousPressed,
-            isBtnPreviousScoreDisabled && styles.btnPreviousDisabled,
-          ]}
-        >
-          <Fontisto
-            name='arrow-return-left'
-            size={40}
-            color={theme.primary}
-          />
-        </Pressable>
       </View>
     </View>
   );
